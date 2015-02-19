@@ -1,27 +1,33 @@
 var express = require('express');
 var app = express();
-var gitSnapshots = require('./GitTimeLapseNodeGit.js');
+var gitConverter= require('./GitTimeLapseNodeGit.js');
 var Log = require('./Logger.js');
 var StateAnalytics = require("./StateAnalytics");
+var GitFilesToObjectsConverter = require("./GitFilesToObjectsConverter.js");
 
 app.get('/timeLapse', function(req, res){
 	var log = new Log('unknown',"Timelapse");
 
-	//var Snapshots = gitSnapshots.generateSnapshotsOfGitRepo("/srv/LAHelper/logs/597cd4dc32743cca14f26abc73dc994049018ea0");
-	var Snapshots = gitSnapshots.getStatesFromRepo("/srv/LAHelper/logs/597cd4dc32743cca14f26abc73dc994049018ea0");
-	Snapshots.then(function(snapshots){
-		StateAnalytics.runAllAnalyticsOnStates(snapshots).then(
-			function(states){
+	//var commits = gitcommits.generatecommitsOfGitRepo("/srv/LAHelper/logs/597cd4dc32743cca14f26abc73dc994049018ea0");
+	var Commits= gitConverter.getCommitsFromRepo("/srv/LAHelper/logs/597cd4dc32743cca14f26abc73dc994049018ea0");
+	Commits.then(function(commits){
+		GitFilesToObjectsConverter.convert(commits).then(function(states){
+			StateAnalytics.getAnalyticsOfStates(states).then(function(states){
 
-			var returnedData = JSON.stringify(snapshots);
-			res.send(returnedData);
-			log.debug("Success");
-			log.print();
+				var returnedData = JSON.stringify(states);
+				res.send(returnedData);
+				log.debug("Success");
+				log.print();
 			},function(error){
-				console.log("Error: ",error);
-				res.send("Error: "+error);
-			}
-		);
+			console.log("Error: ",error);
+			res.send("Error: "+error);
+			});
+
+		},function(error){
+			console.log("Error: ",error);
+			res.send("Error: "+error);
+		}
+														);
 
 	},function(error){
 		res.send("Error : "+error);

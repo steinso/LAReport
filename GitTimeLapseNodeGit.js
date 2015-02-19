@@ -7,7 +7,7 @@ var fs = require('fs');
 /*
  *
  * Object: 
- * [{ //state
+ * [{ //commit
  *		time: ,
  *		files:[ 
  *			{
@@ -17,12 +17,31 @@ var fs = require('fs');
  * }]
  */
 
-var getGitFiles = function(dir){
+
+var getCommitsFromRepo = function(repoPath){
+	return new Promise(function(resolve,reject){
+
+		var watch = timer.create("getCommits");
+		watch.start();
+
+		getFileListFromGitRepo(repoPath).then(function(files){
+			getFileCommits(repoPath,files).then(function(commits){
+				watch.stop();
+				console.log(watch.average(), "ms <- Generated commits for ",repoPath,commits.length);
+
+				resolve(commits);
+			},function(error){reject(error);});	
+		});
+	});
+};
+
+// ls-files is not available through nodegit, so it must be fetched manually
+var getFileListFromGitRepo = function(dir){
 
 	return new Promise(function(resolve,reject){
 
 		exec("git ls-files",{cwd:dir},function(error,stdout,stderr){
-			if(error != null || stderr != ""){
+			if(error !== null || stderr !== ""){
 				reject(error+" \nstderr: "+stderr);
 				return;
 			}
@@ -35,26 +54,10 @@ var getGitFiles = function(dir){
 	});
 };
 
-var getStatesFromRepo = function(repoPath){
+var getFileCommits = function(repoPath,files){
 	return new Promise(function(resolve,reject){
 
-	var watch = timer.create("getStates");
-	watch.start();
-	getGitFiles(repoPath).then(function(files){
-		getFileStates(repoPath,files).then(function(states){
-			watch.stop();
-			console.log(watch.average(), "ms <- Generated states for ",repoPath);
-			resolve(states);
-		},function(error){reject(error);});	
-	});
-	});
-};
-
-var getFileStates = function(repoPath,files){
-	return new Promise(function(resolve,reject){
-
-		console.log("Getting file states");
-		var states = [];
+		var commits = [];
 		var filesInRepo = files;
 		// Open the repository directory.
 		open(repoPath)
@@ -62,40 +65,27 @@ var getFileStates = function(repoPath,files){
 		.then(function(repo) {
 			return repo.getMasterCommit();
 		})
+
 		// Display information about commits on master.
 		.then(function(firstCommitOnMaster) {
 			// Create a new history event emitter.
 			var history = firstCommitOnMaster.history();
 
-			history.on("end",function(commits){
-
-				resolve(states);
-
+			history.on("end",function(_commitObjs){
+				resolve(commits);
 			});
 
 			history.on("error",function(error){
 				reject(error);
 			});
-			// Listen for commit events from the history.
+
 			history.on("commit", function(commit) {
-				var state = {};
-				state.time = commit.date();
-				state.sha = commit.sha();
-				state.msg = commit.message();
-				state.files = [];
 
-				states.push(state);
+				generateCommitObject(commit,filesInRepo).then(function(_commit){
+					commits.push(_commit);
 
-				// Give some space and show the message.
-				filesInRepo.map(function(filename){
-					commit.getEntry(filename).then(function(entry){
-						entry.getBlob().then(function(blob){
-							var file = {};
-							file.name = filename;
-							file.fileContents = String(blob);
-							state.files.push(file);
-						});
-					}); //TODO HERE
+				},function(error){
+					console.log("Could not parse commit: "+error);
 				});
 			});
 
@@ -106,6 +96,30 @@ var getFileStates = function(repoPath,files){
 };
 
 
+var generateCommitObject = function(_commit,filesInRepo){
+	return new Promise(function(resolve,reject){
+
+		var commit = {};
+		commit.time = _commit.date();
+		commit.sha = _commit.sha();
+		commit.msg = _commit.message();
+		commit.files = [];
+
+		//Get file contents from commit
+		filesInRepo.map(function(filename){
+			_commit.getEntry(filename).then(function(entry){
+				entry.getBlob().then(function(blob){
+					var file = {};
+					file.name = filename;
+					file.fileContents = String(blob);
+					commit.files.push(file);
+					resolve(commit);
+				});
+			}); 
+		});
+	});
+};
+
 module.exports = {
-	getStatesFromRepo:getStatesFromRepo
+	getCommitsFromRepo:getCommitsFromRepo
 };

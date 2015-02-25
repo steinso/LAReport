@@ -48,7 +48,7 @@ var GitFilesToObjectsConverter = function(){
 	};
 
 	var getRelevantFiles = function(files){
-		return files.filter(function(file){if(file.name != ".markers.json" && file.name != ".tests.json"){return true;}});
+		return files.filter(function(file){if(file.name.match(/\.markers\.json/) == null && file.name.match(/\.tests\.json/) == null){return true;}});
 	};	
 
 	var getFilesByNameRegex = function(fileList,fileNameRegex){

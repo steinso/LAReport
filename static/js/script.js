@@ -1,4 +1,4 @@
-define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!components/Navbar'],function(React,$,Markers,StartUpLoading,ServerBroker,NavBar){
+define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!components/Navbar','jsx!components/pages/StatsPage','jsx!components/FileList'],function(React,$,Markers,StartUpLoading,ServerBroker,NavBar,StatsPage,FileList){
 
 	var test = "fun";
 	var fileContents = "";
@@ -34,18 +34,26 @@ define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!componen
 		//	});
 		startUpLoading.setDone();
 		var pages = [
-			{name:"Inspect",icon:"code",onClick:function(){
+			{name:"Stats",icon:"area-chart",getComponent:function(){
+				var Page = new StatsPage();
+				return Page.getElement();
 
 			}},
-			{name:"Heartbeat",icon:"heartbeat",onClick:function(){
+			{name:"Inspect",icon:"code",getComponent:function(){
+
+		var FileStateTimeLapseElement = React.createElement(FileStateTimeLapse,{states:states});
+		return FileStateTimeLapseElement;
+			}},
+			{name:"Heartbeat",icon:"heartbeat",getComponent:function(){
 
 			}}];
+
 		var mainElement = React.createElement(MainReportPageComponent,{pages:pages,states:states});
 
-		React.render(
-			mainElement,
-				document.getElementById('body')
-		);
+				React.render(
+					mainElement,
+						document.getElementById('body')
+				);
 
 
 	};
@@ -58,23 +66,31 @@ define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!componen
 
 	var MainReportPageComponent = React.createClass({
 		propTypes: {
-			pages: React.PropTypes.array,
-			states: React.PropTypes.array
+			pages: React.PropTypes.array
+		},
 
+		getInitialState: function(){
+
+			return{
+				currentPage:this.props.pages[0].getComponent()
+			};
 		},
 		onChangePage: function (page) {
-			
+			var component =page.getComponent();	
+			this.setState({currentPage:component});
 		},
 		render: function() {
 			
-			return (<div>
+			var CurrentComponent = this.state.currentPage;
+			//Cant use just JSX here as we need to render the CurrentComponent
+			return React.createElement("div",null,
+				   (
 					<div className="rightNavigation">
 					<NavBar pages={this.props.pages} onChangePage={this.onChangePage} />
 					</div>
-					<div className="pageBody">
-					<FileStateTimeLapse states={this.props.states} />
-					</div>
-				   </div>);
+				   ),
+				   React.createElement("div",{className:"pageBody"},CurrentComponent)
+			);
 		}
 	});
 
@@ -147,26 +163,7 @@ define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!componen
 	});
 
 	// tutorial1.js
-	var FileList = React.createClass({
-		handleClick: function(file){
-			this.props.onFileChange(file);
-
-		},
-		render: function() {
-			var rows = [];
-			var self = this;
-			this.props.files.forEach(function(file){
-				rows.push(<li className="fileRow" onClick={function(){self.handleClick(file)}}> {file.name} </li>);
-			}.bind(this))
-
-			return (
-				<ul className="fileList">
-				{rows}
-				</ul>
-			);
-		}
-	});
-
+	
 	var FileDisplay = React.createClass({
 		render: function() {
 			var className = "fileDisplay "+this.props.className;

@@ -68,6 +68,7 @@
 	color: rgb(44, 44, 44);
 	font-size: 13px;
 	font-family: "Open Sans";
+	overflow:hidden;
 }
 
 .fileList li{
@@ -76,13 +77,14 @@
 }
 
 .fileList li:hover{
-	
+
 	background: rgb(186, 186, 186);
 }
 
 .fileDisplay {
 	width: 450px;
 	flex-basis:200px;
+	height:80%;
 
 }
 
@@ -144,4 +146,27 @@
 	font-size: 38px;
 	color: rgb(70, 92, 113);
 	position: relative;
+}
+
+.chart .axis path,
+.chart .axis line {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+
+}
+
+.chart .x.axis path {
+	display: none;
+}
+
+.chart .line {
+	fill: none;
+	stroke: steelblue;
+	stroke-width: 1.5px;
+
+}
+
+.flex{
+	display:flex;
 }

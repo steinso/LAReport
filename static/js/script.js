@@ -132,11 +132,18 @@ define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!componen
 				selectedFile:selectedFile
 			})
 		},
-		onFileChange: function(file){
+		onFileChange: function(fileName){
+			var selectedFile =this.state.currentState.files.filter(function(state){
+				if(state.name == fileName){
+					return true;
+				}	
+					return false;
+			});
+			
 			this.setState({
-				selectedFile:file
+				selectedFile:selectedFile[0]
 			})
-			console.log("Changing file to: ",file.name);
+			console.log("Changing file to: ",fileName);
 		},
 		onStateChange: function(state){
 			console.log("Changing state to: ",state.time);
@@ -147,13 +154,12 @@ define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!componen
 			})
 		},
 		render: function(){
+			var fileNames = this.state.currentState.files.map(function(file){return file.name;})
 			return (
 				<div>
 				<div className="inspectPage">
-				<FileList files={this.state.currentState.files} onFileChange={this.onFileChange}/>
+				<FileList fileNames={fileNames} onFileChange={this.onFileChange}/>
 				<FileDisplay className="mainFileDisplay" file={this.state.selectedFile} />
-				<div>{this.state.selectedFile.markers.join(",")}</div>
-				<div>{this.state.selectedFile.tests.join(",")}</div>
 				</div>
 				<StateSelector states={this.state.states} onStateChange={this.onStateChange}/>
 				</div>
@@ -181,7 +187,7 @@ define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!componen
 		},
 		render: function() {
 			return (
-				<input ref="slider" type="range" className="rangeSlider" onChange={this.onChange} id="commitChooser" min={0} max={this.props.states.length} />
+				<input ref="slider" type="range" className="rangeSlider" onChange={this.onChange} id="commitChooser" min={0} max={this.props.states.length-1} />
 			);
 		}
 	});

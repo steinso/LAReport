@@ -16,7 +16,9 @@ var gulp = require('gulp'),
  */
 gulp.task('server', function() {
   if (node) node.kill();
-  node = spawn('node', ['--harmony','LAReportServer.js'], {stdio: 'inherit'});
+//  node = spawn('node', ['--harmony','LAReportServer.js'], {stdio: 'inherit'});
+node = spawn('node-debug', ['-p', '8081', '--web-host' ,'192.168.1.158', 'LAReportServer.js'],{stdio:'inherit'});
+
   node.on('close', function (code) {
     if (code === 8) {
       gulp.log('Error detected, waiting for changes...');

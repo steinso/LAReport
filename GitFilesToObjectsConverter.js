@@ -38,7 +38,9 @@ var GitFilesToObjectsConverter = function(){
 				});
 			});
 
-			resolve(states);
+			
+			//Must reverse the array, as pushing makes last commit end up in front
+			resolve(states.reverse());
 			} catch(e){
 				console.trace();
 				console.error("Caught it ");
@@ -99,7 +101,7 @@ var Markers = function(markersFile){
 			});
 
 		}catch(e){
-			console.log(markersFile.substring(0,100));
+			console.log("MarkersFile:",markersFile);
 			console.log("Could not parse markers JSON",markersFile);
 		}
 	};

@@ -1,4 +1,4 @@
-define(['react','d3','Store','providers/FileStatsProvider','jsx!components/FileList','jsx!components/charts/LocOverTime','ServerBroker'],function(React,d3,Store,FileStatsProvider,FileList,LocOverTimeChart,ServerBroker){
+define(['react','d3','Store','providers/FileStatsProvider','jsx!components/FileList','jsx!components/charts/LocOverTime','ServerBroker','models/Workspace'],function(React,d3,Store,FileStatsProvider,FileList,LocOverTimeChart,ServerBroker,Workspace){
 
 	var StatsPage = function(){
 		var _states = [];
@@ -28,8 +28,10 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/FileL
 		initialise();
 		function initialise(){
 			serverBroker.getClientFilesById("").then(function(states){
-				_states = states;
-				_files = states[1].files;
+				var workspace = new Workspace(states);
+				_states = workspace.getStates();
+				_files = workspace.getFileList();
+				console.log(_files);
 				statsStore.setState(getCurrentState());
 			});
 
@@ -39,21 +41,21 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/FileL
 		function getCurrentState(){
 			return {states:_fileStates,files:_files};
 		}	
-		function onChangeFile (file){
+		function onChangeFile (fileName){
 			var statsProvider = new FileStatsProvider("");
-			statsProvider.getStatsByFileName(file.name).then(function(fileStates){
+			statsProvider.getStatsByFileName(fileName).then(function(fileStates){
 				_fileStates = fileStates;
 				statsStore.setState(getCurrentState());
 			},function(error){
 				console.error("Error fetching stats for file: ",error);
 			});
 
-			console.log("File was changed: ",file);
+			console.log("File was changed: ",fileName);
 		}
 		return {
 			onChangeFile:onChangeFile,
 			getCurrentState:getCurrentState
-		}
+		};
 	};
 
 	var StatsPageComponent = React.createClass({
@@ -80,7 +82,7 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/FileL
 		render: function() {
 			return (
 				<div className="flex">
-				<FileList files={this.state.files} onFileChange={this._onFileChange}/>
+				<FileList fileNames={this.state.files} onFileChange={this._onFileChange}/>
 				<LocOverTimeChart className="chart" fileStates={this.state.states}/>
 				</div>
 			);

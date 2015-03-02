@@ -11,6 +11,8 @@ var GitFilesToObjectsConverter = function(){
 				var state = {};
 				state.files = [];
 				state.time = commit.time;
+				state.commitSha = commit.sha;
+				state.commitMsg = commit.msg;
 				states.push(state);
 
 				var markersFiles =getFilesByNameRegex(commit.files,/\.markers\.json/);

@@ -1,3 +1,4 @@
+"use strict";
 var open = require("nodegit").Repository.open;
 var timer = require("./Timer.js");
 var exec = require('child_process').exec;
@@ -16,6 +17,18 @@ var fs = require('fs');
  *		}]
  * }]
  */
+
+var Commit = function(){
+	this.time = 0;
+	this.sha = "";
+	this.msg = "";
+	this.files = []; //WHY CAN I NOT specify types FML
+};
+
+var File = function(){
+	this.name = "";
+	this.fileContents = "";
+};
 
 
 var getCommitsFromRepo = function(repoPath){
@@ -48,7 +61,7 @@ var getFileListFromGitRepo = function(dir){
 
 			var files = stdout.split("\n");
 			//Remove empty element
-			files = files.filter(function(el) {return el.length !== 0});
+			files = files.filter(function(el) {return el.length !== 0;});
 			resolve(files);
 		});
 	});
@@ -99,7 +112,7 @@ var getFileCommits = function(repoPath,files){
 var generateCommitObject = function(_commit,filesInRepo){
 	return new Promise(function(resolve,reject){
 
-		var commit = {};
+		var commit = new Commit();
 		commit.time = _commit.date();
 		commit.sha = _commit.sha();
 		commit.msg = _commit.message();
@@ -109,13 +122,13 @@ var generateCommitObject = function(_commit,filesInRepo){
 		filesInRepo.map(function(filename){
 			_commit.getEntry(filename).then(function(entry){
 				entry.getBlob().then(function(blob){
-					var file = {};
+					var file = new File();
 					file.name = filename;
 					file.fileContents = String(blob);
 					commit.files.push(file);
 					resolve(commit);
 				});
-			}); 
+			});
 		});
 	});
 };

@@ -7,11 +7,22 @@ define([],function(){
 
 					resolve(data);
 				});
-			}); 
+			});
 		};
 
+		var getClientList= function(){
+			return new Promise(function(resolve,reject){
+
+				$.getJSON("/client", function(data) {
+					resolve(data);
+				});
+			});
+		};
+
+
 		return{
-			getClientFilesById:getClientFilesById
+			getClientFilesById: getClientFilesById,
+			getClientList: getClientList
 		};
 	};
 	return ServerBroker;

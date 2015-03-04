@@ -1,4 +1,4 @@
-define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!components/Navbar','jsx!components/pages/StatsPage','jsx!components/FileList'],function(React,$,Markers,StartUpLoading,ServerBroker,NavBar,StatsPage,FileList){
+define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!components/Navbar','jsx!components/pages/StatsPage','jsx!components/pages/InspectPage','jsx!components/FileList'],function(React,$,Markers,StartUpLoading,ServerBroker,NavBar,StatsPage,InspectPage,FileList){
 
 	var test = "fun";
 	var fileContents = "";
@@ -38,29 +38,32 @@ define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!componen
 				var Page = new StatsPage();
 				return Page.getElement();
 
-			}},
+			}}/*,
 			{name:"Inspect",icon:"code",getComponent:function(){
 
-		var FileStateTimeLapseElement = React.createElement(FileStateTimeLapse,{states:states});
-		return FileStateTimeLapseElement;
+				var Page = new InspectPage();
+				return Page.getElement();
+
+				return FileStateTimeLapseElement;
 			}},
 			{name:"Heartbeat",icon:"heartbeat",getComponent:function(){
 
-			}}];
+			}}*/];
 
-		var mainElement = React.createElement(MainReportPageComponent,{pages:pages,states:states});
+			var mainElement = React.createElement(MainReportPageComponent,{pages:pages});
 
-				React.render(
-					mainElement,
-						document.getElementById('body')
-				);
+			React.render(
+				mainElement,
+				document.getElementById('body')
+			);
 
 
 	};
 
-	serverBroker.getClientFilesById("").then(function(states){
-		initialiseModel(states);
-		initialiseUi(states);
+	//serverBroker.getClientFilesById("").then(function(states){
+	serverBroker.getClientList().then(function(clients){
+		//initialiseModel(states);
+		initialiseUi({});
 	});
 
 
@@ -80,115 +83,17 @@ define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!componen
 			this.setState({currentPage:component});
 		},
 		render: function() {
-			
+
 			var CurrentComponent = this.state.currentPage;
 			//Cant use just JSX here as we need to render the CurrentComponent
 			return React.createElement("div",null,
-				   (
-					<div className="rightNavigation">
-					<NavBar pages={this.props.pages} onChangePage={this.onChangePage} />
-					</div>
-				   ),
-				   React.createElement("div",{className:"pageBody"},CurrentComponent)
-			);
+									   (
+										   <div className="rightNavigation">
+										   <NavBar pages={this.props.pages} onChangePage={this.onChangePage} />
+										   </div>
+									   ),
+									   React.createElement("div",{className:"pageBody"},CurrentComponent)
+									  );
 		}
 	});
-
-
-	var FileStateTimeLapse = React.createClass({
-
-		getMarkersFile: function(state){
-			return this.getFileByName(state,".markers.json")
-		},
-		getTestsFile: function(state){
-			return	this.getFileByName(state,".tests.json")
-		},
-		getFileByName: function(state,fileName){
-			return state.files.filter(function(file){if(file.name === fileName){return file;}})[0];
-		},
-		getInitialState: function(){
-			var states = this.props.states;
-			var currentState = states[0];
-			var markersFile = this.getMarkersFile(currentState);
-			var testsFile = this.getTestsFile(currentState);
-			var selectedFile = currentState.files[0];
-			console.log("STATE: ",currentState,selectedFile,markersFile,testsFile);
-			return {
-				states:states,
-				currentState:currentState,
-				selectedFile:selectedFile,
-				markersFile: markersFile,
-				testsFile: testsFile
-			}
-		},
-		updateStateGivenSelectedState: function(state){
-
-			var markersFile = this.getMarkersFile(state);
-			var testsFile = this.getTestsFile(state);
-			var selectedFile = this.getFileByName(state,this.state.selectedFile.name);
-			this.setState({
-				markersFile:markersFile,
-				testsFile:testsFile,
-				selectedFile:selectedFile
-			})
-		},
-		onFileChange: function(fileName){
-			var selectedFile =this.state.currentState.files.filter(function(state){
-				if(state.name == fileName){
-					return true;
-				}	
-					return false;
-			});
-			
-			this.setState({
-				selectedFile:selectedFile[0]
-			})
-			console.log("Changing file to: ",fileName);
-		},
-		onStateChange: function(state){
-			console.log("Changing state to: ",state.time);
-			this.updateStateGivenSelectedState(state);
-			this.setState({
-				currentState:state,
-
-			})
-		},
-		render: function(){
-			var fileNames = this.state.currentState.files.map(function(file){return file.name;})
-			return (
-				<div>
-				<div className="inspectPage">
-				<FileList fileNames={fileNames} onFileChange={this.onFileChange}/>
-				<FileDisplay className="mainFileDisplay" file={this.state.selectedFile} />
-				</div>
-				<StateSelector states={this.state.states} onStateChange={this.onStateChange}/>
-				</div>
-			);
-
-		}
-	});
-
-	// tutorial1.js
-	
-	var FileDisplay = React.createClass({
-		render: function() {
-			var className = "fileDisplay "+this.props.className;
-			return (
-				<textarea readOnly="readOnly" className={className} value={this.props.file.fileContents}>
-				</textarea>
-			);
-		}
-	});
-
-	var StateSelector = React.createClass({
-		onChange: function(event){
-			var stateNumber = this.refs.slider.getDOMNode().value;
-			this.props.onStateChange(this.props.states[stateNumber]);	
-		},
-		render: function() {
-			return (
-				<input ref="slider" type="range" className="rangeSlider" onChange={this.onChange} id="commitChooser" min={0} max={this.props.states.length-1} />
-			);
-		}
-	});
-})
+});

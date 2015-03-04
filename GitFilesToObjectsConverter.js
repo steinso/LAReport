@@ -29,11 +29,11 @@ var GitFilesToObjectsConverter = function(){
 					file.markers = markers.getMarkersForFile(_file);
 					file.tests = tests.getTestsForFile(_file);
 					if(file.tests.length>0){
-						console.log("Found tests for file: "+file.name," - state #: ",states.length);
+					//	console.log("Found tests for file: "+file.name," - state #: ",states.length);
 					}
 
 					if(file.markers.length>0){
-						console.log("Found markers for file: "+file.name," - state #: ",states.length);
+					//	console.log("Found markers for file: "+file.name," - state #: ",states.length);
 					}
 
 					state.files.push(file);

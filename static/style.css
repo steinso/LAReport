@@ -170,4 +170,98 @@
 
 .flex{
 	display:flex;
+	flex-flow:row wrap;
+	width: 100%;
+	align-content: flex-start;
+	align-items: stretch;
+}
+
+.overlay{
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	z-index:100;
+	background: rgba(0,0,0,.3);
+	display:block;
+}
+
+.listButtonBox{
+	position:relative;
+	top:50px;
+	margin:auto;
+	display:block;
+	width:650px;
+	height:350px;
+	background:rgb(102, 212, 245);
+
+	-webkit-box-align: center;
+	-webkit-box-pack: center;
+
+	display: -ms-flexbox;
+	-ms-flex-wrap: wrap;
+	-ms-flex-direction: column;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	padding:35px;
+	box-sizing:border-box;
+
+	-webkit-animation: appear 0.15s linear;
+}
+
+.listButtonBox .element{
+	padding: 10px;
+	margin:5px;
+	background:rgb(68, 179, 211);
+	display:block;
+	text-align:center;
+	font-family: "Open Sans";
+
+}
+
+.listButtonBox .element:hover{
+	cursor:pointer;
+	background:rgb(60, 169, 201);
+}
+
+.listButtonBox .element.selected{
+	background:rgb(60, 169, 201);
+}
+
+@-webkit-keyframes appear{
+	0% {transform: translateY(800px);}
+	70% {transform: translateY(100px);}
+	100% {transform: translateY(0px);}
+}
+
+.topBar{
+	width:100%;
+	height:80px;
+}
+
+.clientChooser{
+	height: 70px;
+	background: rgb(249, 248, 248);
+	padding: 0;
+	margin: 0;
+	border: 0;
+	flex-basis: 100%;
+
+}
+
+.listBoxButton{
+	height: 50px;
+	background: rgb(110, 216, 236);
+	padding: 10px;
+	font-family: "Open Sans";
+	text-align: center;
+	line-height: 30px;
+	margin-top: 10px;
+	margin-left: 20px;
+	box-sizing: border-box;
+	width: 100px;
+	overflow:hidden;
+
 }

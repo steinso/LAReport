@@ -49,6 +49,12 @@ define(['react','d3'],function(React,d3){
 		var _state = state;
 		var _props = props;
 		var svg;
+		var line;
+
+		var yAxis;
+		var xAxis;
+		var x;
+		var y;
 
 		_constructor();
 		function _constructor(){
@@ -74,46 +80,29 @@ define(['react','d3'],function(React,d3){
 			.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-			update(_state);
-		}
-
-		function update(state){
-			_state = state;
-			var scales = _setScales();
-			_drawPoints();
-		}
-
-		function _setScales(){
-
-		}
-
-		function _drawPoints(){
-
-			var margin = {top: 20, right: 20, bottom: 30, left: 50},
-				width = 500 - margin.left - margin.right,
-				height = 500 - margin.top - margin.bottom;
 
 			//var x = d3.time.scale()
-			var x = d3.scale.linear()
+			x = d3.scale.linear()
 			.range([0, width]);
 
-			var y = d3.scale.linear()
+			y = d3.scale.linear()
 			.range([height, 0]);
 
 			x.domain(d3.extent(_state, function(d) { return d.workingTime;  }));
 			y.domain(d3.extent(_state, function(d) { return d.numberOfLines;  }));
 
-			var xAxis = d3.svg.axis()
+			xAxis = d3.svg.axis()
 			.scale(x)
 			.orient("bottom");
 
-			var yAxis = d3.svg.axis()
+			yAxis = d3.svg.axis()
 			.scale(y)
 			.orient("left");
 
-			var line = d3.svg.line()
+			line = d3.svg.line()
 			.x(function(d) { return x(d.workingTime);  })
-			.y(function(d) { return y(d.numberOfLines);  });
+			.y(function(d) { return y(d.numberOfLines);  })
+			.interpolate('step-before');
 			// Add X-Axis
 			svg.append("g")
 			.attr("class", "x axis")
@@ -132,11 +121,60 @@ define(['react','d3'],function(React,d3){
 			.text("LOC");
 
 			// Add path
-			svg.append("path")
-			.datum(_state)
+			console.log("CREATE: Setting path state: ",_state,svg.selectAll("path").data());
+			var lines = svg.append("g")
+			.attr("class","lines")
+			
+			lines.selectAll("path").data([_state]).enter()
+			.append("path")
 			.attr("class", "line")
 			.attr("d", line);
-		};
+
+			update(_state);
+		}
+
+		function update(state){
+			console.log("Updating chart: ",state)
+			_state = state;
+			var scales = _setScales();
+			_drawPoints(state);
+		}
+
+		function _setScales(){
+
+		}
+
+		function _drawPoints(state){
+		   window.line = line;
+		   window.svg = svg;
+		   window.state = _state;
+			console.log("UPDATE: Setting path state: ",state,svg.selectAll(".lines path").data());
+			console.log("Name: ",state[0].name)
+			
+			x.domain([0,d3.max(_state, function(d) { return d.workingTime;  })]);
+			y.domain([0,d3.max(state, function(d) { return d.numberOfLines; })]);
+			console.log("Range: ",d3.extent(state, function(d) { return d.numberOfLines; }).reverse())
+
+			xAxis = d3.svg.axis()
+			.scale(x)
+			.orient("bottom");
+
+			yAxis = d3.svg.axis()
+			.scale(y)
+			.orient("left");
+		//	svg.selectAll(".x.axis").call(xAxis);
+			svg.transition().duration(500).selectAll(".y.axis").call(yAxis)
+			svg.transition().duration(500).selectAll(".x.axis").call(xAxis)
+			
+			
+			svg.selectAll(".lines path").data([state])
+			.transition().duration(500)
+			.attr("class", "line")
+			.attr("d", line);
+
+
+			
+		}
 
 		function destroy(){
 

@@ -3,10 +3,10 @@ define(['jquery'],function($){
 	var FileStatsProvider= function(userId){
 		_userId = userId;
 
-		function getStatsByFileName(fileName){
+		function getStatsByFileName(clientId,fileName){
 			return new Promise(function(resolve,reject){
 
-				$.getJSON("/timeLapse/"+_userId, function(data) {
+				$.getJSON("/timeLapse/"+clientId, function(data) {
 					var fileData = []; 
 					console.log(data);
 					var startDate = +new Date(data[0].time);

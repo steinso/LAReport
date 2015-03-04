@@ -19,13 +19,13 @@ exec("pwd",function(error,stdout,stderr){
 	startDir = stdout;
 });
 
+/*
 var genTest = function* (init){
 	var i = init;
 	i+=yield i;
 	i += yield i;
 	return i;
 };
-/*
 var g = genTest(5);
 console.log(g.next(5));
 console.log(g.next(5));

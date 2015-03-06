@@ -263,5 +263,6 @@
 	box-sizing: border-box;
 	width: 100px;
 	overflow:hidden;
+	text-overflow: ellipsis;
 
 }

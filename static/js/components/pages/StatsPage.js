@@ -1,10 +1,9 @@
-define(['react','d3','Store','providers/FileStatsProvider','jsx!components/ClientChooser','jsx!components/FileList','jsx!components/charts/LocOverTime','ServerBroker','models/Workspace'],function(React,d3,Store,FileStatsProvider,ClientChooser,FileList,LocOverTimeChart,ServerBroker,Workspace){
+define(['react','d3','Store','providers/FileStatsProvider','jsx!components/ClientChooser','jsx!components/FileList','jsx!components/charts/LocOverTime','ServerBroker','models/Workspace','ClientId'],function(React,d3,Store,FileStatsProvider,ClientChooser,FileList,LocOverTimeChart,ServerBroker,Workspace,clientId){
 
 	var StatsPage = function(){
 		var _states = [];
 		var _files = [];
 		var _fileStates = [];
-
 
 		function getElement() {
 
@@ -26,19 +25,29 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 		var _clientList = [];
 		var _selectedClient = "";
 		var serverBroker = new ServerBroker();
-	
-		initialise();
-		function initialise(){
-				serverBroker.getClientList().then(function(clientList){
-					_clientList = clientList;
-					console.log("Clients:",_clientList);
-					statsStore.setState(getCurrentState());
-			});
+
+		constructor();
+		function constructor(){
+
 			statsStore.setState(getCurrentState());
-		}
+
+			serverBroker.getClientList().then(function(clientList){
+				_clientList = clientList;
+				console.log("Clients:",_clientList);
+				statsStore.setState(getCurrentState());
+			});
+
+			_selectedClient = clientId.id;
+			onChangeClient(_selectedClient);
+		};
 
 		function getCurrentState(){
-			return {states:_fileStates,files:_files,clientList:_clientList,selectedClient:_selectedClient};
+			return {
+				states: _fileStates,
+				files: _files,
+				clientList: _clientList,
+				selectedClient: _selectedClient
+			};
 		}
 		function onChangeFile (fileName){
 			var statsProvider = new FileStatsProvider("");
@@ -54,10 +63,10 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 
 		function onChangeClient(clientId){
 
-				_selectedClient = clientId;
-				_updateStates();
-				statsStore.setState(getCurrentState());
-				console.log("Client changed to: "+clientId,"FEATURE NOT IMPLEMENTED");
+			_selectedClient = clientId;
+			_updateStates();
+			statsStore.setState(getCurrentState());
+			console.log("Client changed to: "+clientId,"FEATURE NOT IMPLEMENTED");
 		}
 
 		function _updateStates(){
@@ -67,6 +76,8 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 				_files = workspace.getFileList();
 				console.log("Got new client files:",_files);
 				statsStore.setState(getCurrentState());
+			},function(error){
+				alert("Client not found..");
 			});
 		}
 
@@ -103,13 +114,20 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 		},
 		render: function() {
 			var chart = {};
-			if(this.state.states !== null && this.state.states.length>0){
-				
+			var chooser = {};
+			console.log("Privilege: ",clientId.privilege)
+			if(this.state.states !== null && this.state.states.length>0 ){
+
 				chart = <LocOverTimeChart className="chart" fileStates={this.state.states}/>
 			}
+
+			if(this.state.clientList.length>1 && clientId.privilege!=="user"){
+				chooser = <ClientChooser clientList={this.state.clientList} currentElement={this.state.selectedClient} onClientChange={this._onClientChange}/>
+			}
+			
 			return (
 				<div className="flex">
-				<ClientChooser clientList={this.state.clientList} currentElement={this.state.selectedClient} onClientChange={this._onClientChange}/>
+				{chooser}
 				<FileList fileNames={this.state.files} onFileChange={this._onFileChange}/>
 				{chart}
 				</div>

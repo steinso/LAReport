@@ -1,4 +1,4 @@
-define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!components/Navbar','jsx!components/pages/StatsPage','jsx!components/pages/InspectPage','jsx!components/FileList'],function(React,$,Markers,StartUpLoading,ServerBroker,NavBar,StatsPage,InspectPage,FileList){
+define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!components/Navbar','jsx!components/pages/StatsPage','jsx!components/pages/InspectPage','jsx!components/FileList','ClientId'],function(React,$,Markers,StartUpLoading,ServerBroker,NavBar,StatsPage,InspectPage,FileList,clientId){
 
 	var test = "fun";
 	var fileContents = "";
@@ -61,12 +61,26 @@ define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!componen
 	};
 
 	//serverBroker.getClientFilesById("").then(function(states){
-	serverBroker.getClientList().then(function(clients){
+	//serverBroker.getClientList().then(function(clients){
 		//initialiseModel(states);
-		initialiseUi({});
-	});
+	//});
+	
+	function startup(){
+		var serverBroker = new ServerBroker();
+		if(clientId.id == null){
+			var nickname= prompt("Enter your nickname:");
+			clientId.id = nickname;
+			serverBroker.getClientId(nickname).then(function(id){
+				clientId.id = id;
+				initialiseUi();
+			});
+		}else{
+				initialiseUi();
+		}
+		
+	}
 
-
+	startup();
 	var MainReportPageComponent = React.createClass({
 		propTypes: {
 			pages: React.PropTypes.array

@@ -80,10 +80,59 @@ define(['react','d3'],function(React,d3){
 			.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
 			//var x = d3.time.scale()
 			x = d3.scale.linear()
 			.range([0, width]);
+
+			var xScale = function(){
+
+				var outLow = 0;
+				var outHigh = 0;
+				var ranges = {};
+				var currentShift = 0;
+
+				// Input
+				function range(inputValues){
+					var last = 0;
+					var threshold = 1;
+					for(var i=0;i<inputValues.length;i++){
+						if(last - inputValues[i] > threshold){
+							var r = {};
+							r.x = inputValues[i].x;
+							r.shift = (last - inputValues[i]);
+							ranges.push(r);
+						}
+						last = inputValues[i];
+					}
+				}
+
+				// Output
+				function domain(input){
+					if(input.length!=2 || input[0]>input[1]){
+						throw new Error("Domain not properly defined as array with 2 elements");
+					}
+					outHigh = input[0];
+					outHigh = input[1];
+				}
+
+
+				function scale(value){
+					var shift = 0;
+					for(var i=0;i<ranges.length;i++){
+						if(value>ranges[i].x){
+							shift+= ranges[i].shift;
+						}
+					}
+					return value - shift;
+
+				}
+
+				return function(value){
+					scale(value);
+					this.range=range;
+					this.domain=domain;
+					}
+			}
 
 			y = d3.scale.linear()
 			.range([height, 0]);
@@ -107,7 +156,14 @@ define(['react','d3'],function(React,d3){
 			svg.append("g")
 			.attr("class", "x axis")
 			.attr("transform", "translate(0," + height + ")")
-			.call(xAxis);
+			.call(xAxis)
+			.append("text")
+			.attr("y", -15)
+			.attr("x", width)
+			.attr("dy", ".71em")
+			.style("text-anchor", "end")
+			.text("Time Spent (min)");
+
 
 			// Add Y-Axis
 			svg.append("g")

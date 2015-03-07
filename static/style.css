@@ -61,11 +61,11 @@
 }
 
 .fileList{
-	flex-basis: 150px;
+	flex-basis: 200px;
 	list-style: none;
 	padding: 0;
 	margin: 0;
-	background: rgba(218, 218, 218, 0.74);
+	background: rgba(220, 228, 229, 0.74);
 	color: rgb(44, 44, 44);
 	font-size: 13px;
 	font-family: "Open Sans";
@@ -73,13 +73,14 @@
 }
 
 .fileList li{
-	padding:5px 10px;
+	padding:10px 10px;
 	cursor:pointer;
+	  border-bottom: 1px solid rgba(0, 0, 0, 0.23);
 }
 
 .fileList li:hover{
 
-	background: rgb(186, 186, 186);
+	background:rgb(196, 237, 218);
 }
 
 .fileDisplay {
@@ -149,10 +150,16 @@
 	position: relative;
 }
 
+
+.chart .axis{
+	fill: rgb(60, 60, 61);
+	font-family: "Open sans";
+	font-size: 12px;
+}
 .chart .axis path,
 .chart .axis line {
 	fill: none;
-	stroke: #000;
+	stroke: grey;
 	shape-rendering: crispEdges;
 
 }
@@ -163,8 +170,9 @@
 
 .chart .line {
 	fill: none;
-	stroke: steelblue;
-	stroke-width: 1.5px;
+	stroke: rgb(59, 195, 138);
+/*	stroke: steelblue;*/
+	stroke-width: 1.3px;
 
 }
 
@@ -265,4 +273,58 @@
 	overflow:hidden;
 	text-overflow: ellipsis;
 
+}
+
+
+.statsBar{
+	flex-basis:100%;
+	display:flex;
+}
+
+.statsBar .section{
+	flex-basis:400px;
+
+	  font-family: "Open Sans";
+			    color: rgb(42, 42, 42);
+				display: flex;
+				  flex-direction: column;
+				    justify-content: center;
+					  align-content: space-between;
+					    align-items: center;
+}
+
+
+.section.title {
+	  font-family: "Open Sans";
+	    font-weight: 600;
+		  line-height: 80px;
+		    padding-left: 22px;
+			  font-size: 20px;
+			    color: rgb(42, 42, 42);
+}
+
+.statsBar span.title {
+	  display: block;
+	    text-align: center;
+		  font-weight: 300;
+
+}
+
+.statsBar span.value {
+	  font-size: 20px;
+
+  }
+
+.statsBar span.avg:before {
+	content:"/";
+}
+.statsBar span.avg {
+	  font-size: 12px;
+	    color: gray;
+		  text-align: center;
+
+}
+
+.center{
+	margin:auto;
 }

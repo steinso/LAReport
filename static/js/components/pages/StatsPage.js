@@ -1,4 +1,4 @@
-define(['react','d3','Store','providers/FileStatsProvider','jsx!components/ClientChooser','jsx!components/FileList','jsx!components/charts/LocOverTime','ServerBroker','models/Workspace','ClientId'],function(React,d3,Store,FileStatsProvider,ClientChooser,FileList,LocOverTimeChart,ServerBroker,Workspace,clientId){
+define(['react','d3','Store','providers/FileStatsProvider','jsx!components/ClientChooser','jsx!components/FileList','jsx!components/charts/LocOverTime','ServerBroker','models/Workspace','ClientId','jsx!components/StatsBar'],function(React,d3,Store,FileStatsProvider,ClientChooser,FileList,LocOverTimeChart,ServerBroker,Workspace,clientId,StatsBar){
 
 	var StatsPage = function(){
 		var _states = [];
@@ -20,6 +20,7 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 
 	var Dispatcher = function(statsStore){
 		var _states = [];
+		var _statsSections = [];
 		var _files = [];
 		var _fileStates = [];
 		var _clientList = [];
@@ -28,6 +29,13 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 
 		constructor();
 		function constructor(){
+			_statsSections = [
+				{type:"title",title:"Øving 5"},
+				{type:"stats",value:"6 hrs",avg:"3 hrs", title:"Time spent"},
+				{type:"stats",value:"0",avg:"3", title:"Tests failed"},
+				{type:"stats",value:"120",avg:"150", title:"Errors corrected"},
+				{type:"stats",value:"10 min",avg:"5 min", title:"Correcting error"}
+			];
 
 			statsStore.setState(getCurrentState());
 
@@ -46,6 +54,7 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 				states: _fileStates,
 				files: _files,
 				clientList: _clientList,
+				statsSections: _statsSections,
 				selectedClient: _selectedClient
 			};
 		}
@@ -121,12 +130,13 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 				chart = <LocOverTimeChart className="chart" fileStates={this.state.states}/>
 			}
 
-			if(this.state.clientList.length>1 && clientId.privilege!=="user"){
+			if(this.state.clientList.length>1 /*&& clientId.privilege!=="user"*/){
 				chooser = <ClientChooser clientList={this.state.clientList} currentElement={this.state.selectedClient} onClientChange={this._onClientChange}/>
 			}
 			
 			return (
 				<div className="flex">
+				<StatsBar sections={this.state.statsSections} />
 				{chooser}
 				<FileList fileNames={this.state.files} onFileChange={this._onFileChange}/>
 				{chart}

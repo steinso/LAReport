@@ -130,7 +130,7 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 				chart = <LocOverTimeChart className="chart" fileStates={this.state.states}/>
 			}
 
-			if(this.state.clientList.length>1 /*&& clientId.privilege!=="user"*/){
+			if(this.state.clientList.length>1 && clientId.privilege!=="user"){
 				chooser = <ClientChooser clientList={this.state.clientList} currentElement={this.state.selectedClient} onClientChange={this._onClientChange}/>
 			}
 			

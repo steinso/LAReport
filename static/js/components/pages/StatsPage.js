@@ -30,11 +30,11 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 		constructor();
 		function constructor(){
 			_statsSections = [
-				{type:"title",title:"Øving 5"},
-				{type:"stats",value:"6 hrs",avg:"3 hrs", title:"Time spent"},
-				{type:"stats",value:"0",avg:"3", title:"Tests failed"},
-				{type:"stats",value:"120",avg:"150", title:"Errors corrected"},
-				{type:"stats",value:"10 min",avg:"5 min", title:"Correcting error"}
+				{type:"title",title:"Øving X"},
+				{type:"stats",value:"? hrs",avg:"? hrs", title:"Time spent"},
+				{type:"stats",value:"?",avg:"?", title:"Tests failed"},
+				{type:"stats",value:"?",avg:"?", title:"Errors corrected"},
+				{type:"stats",value:"? min",avg:"? min", title:"Correcting error"}
 			];
 
 			statsStore.setState(getCurrentState());

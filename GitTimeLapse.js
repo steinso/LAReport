@@ -11,6 +11,7 @@
 
 var exec = require('child_process').exec;
 var fs = require('fs');
+var Promise = require("es6-promise").Promise;
 
 var snapshotSeperator = "1234";
 var startDir;

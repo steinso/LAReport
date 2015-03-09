@@ -3,6 +3,7 @@ var open = require("nodegit").Repository.open;
 var timer = require("./Timer.js");
 var exec = require('child_process').exec;
 var fs = require('fs');
+var Promise = require("es6-promise").Promise;
 
 
 /*

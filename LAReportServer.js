@@ -4,6 +4,7 @@ var express = require("express");
 var app = express();
 var Log = require("./Logger.js");
 var request = require("request");
+var Promise = require("es6-promise").Promise;
 
 app.get("/client/:nickname",function(req,res){
 	var nickname = req.params.nickname;

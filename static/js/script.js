@@ -71,6 +71,9 @@ define(['react','jquery','Markers','StartUpLoading','ServerBroker','jsx!componen
 			var nickname= prompt("Enter your nickname:");
 			clientId.id = nickname;
 			serverBroker.getClientId(nickname).then(function(id){
+				if(id === undefined){
+					alert("Kallenavn("+nickname+") finnes ikke i databasen, prøv Å sett et nytt kallenavn. Hvis dette ikke fungerer, vennligst gi beskejd.");
+				}
 				clientId.id = id;
 				initialiseUi();
 			});

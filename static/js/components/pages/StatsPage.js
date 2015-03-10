@@ -124,10 +124,12 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 		render: function() {
 			var chart = {};
 			var chooser = {};
+			var fileName = {};
 			console.log("Privilege: ",clientId.privilege)
 			if(this.state.states !== null && this.state.states.length>0 ){
 
 				chart = <LocOverTimeChart className="chart" fileStates={this.state.states}/>
+				fileName = <div>{this.state.files.name}</div>
 			}
 
 			if(this.state.clientList.length>1 && clientId.privilege!=="user"){
@@ -140,6 +142,7 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 				{chooser}
 				<FileList fileNames={this.state.files} onFileChange={this._onFileChange}/>
 				{chart}
+				{fileName}
 				</div>
 			);
 		}

@@ -20,7 +20,7 @@ app.get("/client/:nickname",function(req,res){
 
 app.get("/client",function(req,res){
 
-	var url = "http://localhost:50811/client";
+	var url = "http://localhost:50812/client";
     var log = new Log("unknown", "Get client list");
 
 	request.get(url,function(error,response,body){

@@ -32,7 +32,8 @@ app.get("/client",function(req,res){
 app.get("/timeLapse/:clientId", function(req, res){
 	//var clientId ="8ec9722482776dafe71dc6b29c57616c5ad12279";
 	var clientId = req.params.clientId;
-	var url = "http://localhost:50811/repoTimelapse/"+clientId;
+//	var url = "http://localhost:50811/repoTimelapse/"+clientId;
+	var url = "http://localhost:50812/repoStates/"+clientId;
     var log = new Log(clientId, "Timelapse");
 
 	request.get(url,function(error,response,body){

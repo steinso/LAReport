@@ -4,9 +4,10 @@ define([],function(){
 		var _fileList = [];
 
 		_constructor(workspaceStates);
-		function _constructor(states){
-			states.map(function(state){
-				addState(state);
+		function _constructor(files){
+			files.map(function(file){
+				_fileList.push(file);
+				//addState(files);
 			});
 		}
 

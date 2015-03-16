@@ -9,8 +9,8 @@ var FileList = React.createClass({
 		render: function() {
 			var rows = [];
 			var self = this;
-			this.props.fileNames.forEach(function(fileName){
-				rows.push(<li className="fileRow" onClick={function(){self.handleClick(fileName)}}> {fileName} </li>);
+			this.props.files.forEach(function(file){
+				rows.push(<li className="fileRow" onClick={function(){self.handleClick(file.name)}}> {file.name} </li>);
 			}.bind(this))
 
 			return (

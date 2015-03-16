@@ -1,41 +1,41 @@
-define(['jquery'],function($){
+define(['jquery','lodash'],function($,_){
 
 	var FileStatsProvider= function(userId){
 		_userId = userId;
 
-		function getStatsByFileName(clientId,fileName){
+		function getStatsOfFile(file){
 			return new Promise(function(resolve,reject){
-
-				$.getJSON("/timeLapse/"+clientId, function(data) {
 					var fileData = []; 
-					console.log(data);
-					var startDate = +new Date(data[0].time);
-					data.map(function(state){
-						var file = state.files.filter(function(file){
-							if(file.name == fileName){ return true;	}
-							return false;
-						});
-						if(file.length === 0){return;} 
-
-						var fileState = file[0];
-						fileState.time = state.time;
-						fileState.workingTime = +new Date(state.time)-startDate;
-						fileState.workingTime /= 1000*60;
-						fileData.push(fileState);
-						
+					file.states = _.sortBy(file.states,function(state){
+						return state.time;
 					});
-					console.log("Filedata:",fileData);
-					if(fileData.length<1){
-						reject("File not found: "+fileName);
-					}
-					resolve(fileData);
-				});
 
+					var startDate = +new Date(file.states[0].time);
+					var buffer = 0;
+					var idleThreshold = 10*60*1000; //assumed idle after x ms
+					var previousTime = startDate;
+
+					file.states.map(function(state){
+						var time = +new Date(state.time);
+						var timeSinceLastChange = time - previousTime;
+						if(timeSinceLastChange > idleThreshold){
+							buffer += timeSinceLastChange-idleThreshold;
+							state.idle = timeSinceLastChange-idleThreshold;
+						}
+						previousTime = time;
+
+						state.workingTime = time-startDate-buffer;
+						state.workingTime /= 1000*60;
+					});
+					if(file.states.length<1){
+						reject("File contains no states: "+fileName);
+					}
+					resolve(file);
 			});
 		}
 
 		return{
-			getStatsByFileName:getStatsByFileName
+			getStatsOfFile:getStatsOfFile
 		};
 	};
 

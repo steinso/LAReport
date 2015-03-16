@@ -151,7 +151,7 @@ define(['react','d3'],function(React,d3){
 			line = d3.svg.line()
 			.x(function(d) { return x(d.workingTime);  })
 			.y(function(d) { return y(d.numberOfLines);  })
-			.interpolate('step-before');
+			.interpolate('step-after');
 			// Add X-Axis
 			svg.append("g")
 			.attr("class", "x axis")

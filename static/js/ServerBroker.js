@@ -1,4 +1,4 @@
-define(['ClientId'],function(user){
+define(['ClientId','providers/FileStatsProvider'],function(user,FileStatsProvider){
 	/*
 	 * Singleton that handles communication with the server
 	 */
@@ -8,9 +8,14 @@ define(['ClientId'],function(user){
 		var getClientFilesById = function(clientId){
 			return new Promise(function(resolve,reject){
 
+				var fileStatsProvider = new FileStatsProvider();
+
 				$.getJSON("/timeLapse/"+clientId, function(data) {
 					console.log("GOT ",data);
-
+					console.log("Parsing data");
+					data.forEach(function(file){
+						fileStatsProvider.getStatsOfFile(file);
+					})
 					resolve(data);
 				});
 			});

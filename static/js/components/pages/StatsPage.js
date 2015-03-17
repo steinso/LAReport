@@ -50,7 +50,7 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 			if(_currentFile !== undefined && _currentFile.states !== undefined && _currentFile.states.length>0){
 				var lastState = _currentFile.states[_currentFile.states.length-1] || {};
 				time = Math.round(lastState.workingTime);
-				//testsFailed = lastState.numberOfFailedTests;
+				testsFailed = lastState.numberOfFailedTests;
 				errors = lastState.numberOfMarkers;
 				title = _currentFile.name;
 			}

@@ -10,7 +10,7 @@ define(['ClientId','providers/FileStatsProvider'],function(user,FileStatsProvide
 
 				var fileStatsProvider = new FileStatsProvider();
 
-				$.getJSON("/timeLapse/"+clientId, function(data) {
+				$.getJSON("timeLapse/"+clientId, function(data) {
 					console.log("GOT ",data);
 					console.log("Parsing data");
 					data.forEach(function(file){
@@ -24,7 +24,7 @@ define(['ClientId','providers/FileStatsProvider'],function(user,FileStatsProvide
 		var getClientList= function(){
 			return new Promise(function(resolve,reject){
 
-				$.getJSON("/client", function(data) {
+				$.getJSON("client", function(data) {
 					resolve(data);
 				});
 			});
@@ -33,7 +33,7 @@ define(['ClientId','providers/FileStatsProvider'],function(user,FileStatsProvide
 		var getClientId = function(name){
 			return new Promise(function(resolve,reject){
 
-				$.getJSON("/client/"+name, function(data) {
+				$.getJSON("client/"+name, function(data) {
 					var id= data.id;
 					resolve(id);
 				});

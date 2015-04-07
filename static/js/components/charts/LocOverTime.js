@@ -1,5 +1,9 @@
 define(['react','d3'],function(React,d3){
 
+	/**
+	 * Chart component, renders a chart with lines of code over time. Also includes
+	 * views of markers and tests.
+	 **/
 	var LocOverTimeChart = React.createClass({
 		propTypes: {
 			data: React.PropTypes.array,
@@ -13,11 +17,14 @@ define(['react','d3'],function(React,d3){
 			};
 		},
 
+		// D3 does not natively play nice with react, so we have to integrate
+		// it with react and update the D3 class on comoponent update
 		componentDidMount: function() {
-			console.log("Comp did mount");
-			var el = this.refs['chartContainer'].getDOMNode();
+			var el = this.refs["chartContainer"].getDOMNode();
 			var state = this.getChartState();
-			var d3Chart = new D3Chart(el,{width: '100%',height:'300px'},state);
+
+			var d3Chart = new D3Chart(el,{width: "100%", height: "300px"}, state);
+
 			this.setState({
 				d3Chart: d3Chart
 			});
@@ -47,7 +54,6 @@ define(['react','d3'],function(React,d3){
 
 		var _el = el;
 		var _state = state;
-		var _props = props;
 		var svg;
 		var line;
 		var markersArea;
@@ -62,18 +68,11 @@ define(['react','d3'],function(React,d3){
 		_constructor();
 		function _constructor(){
 
-			/*_state = [
-				{time:0,numberOfLines:0,build:true,markers:0,testsFailed:5},
-				{time:10,numberOfLines:10,build:false ,markers:10,testsFailed:3},
-				{time:100,numberOfLines:130,build:true,markers:2,testsFailed:1},
-				{time:120,numberOfLines:90,build:true,markers:0,testsFailed:0},
-			]*/
-		   console.log("State: ",_state);
+			console.log("Loc chart State: ",_state);
 
 			var margin = {top: 20, right: 20, bottom: 30, left: 50},
 				width = 500 - margin.left - margin.right,
 				height = 500 - margin.top - margin.bottom;
-
 
 			//Add SVG element
 			svg = d3.select(_el).append("svg")
@@ -83,66 +82,18 @@ define(['react','d3'],function(React,d3){
 			.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-			//var x = d3.time.scale()
+			// Specify the range (possible pixel output values)
 			x = d3.scale.linear()
 			.range([0, width]);
-
-			var xScale = function(){
-
-				var outLow = 0;
-				var outHigh = 0;
-				var ranges = {};
-				var currentShift = 0;
-
-				// Input
-				function range(inputValues){
-					var last = 0;
-					var threshold = 1;
-					for(var i=0;i<inputValues.length;i++){
-						if(last - inputValues[i] > threshold){
-							var r = {};
-							r.x = inputValues[i].x;
-							r.shift = (last - inputValues[i]);
-							ranges.push(r);
-						}
-						last = inputValues[i];
-					}
-				}
-
-				// Output
-				function domain(input){
-					if(input.length!=2 || input[0]>input[1]){
-						throw new Error("Domain not properly defined as array with 2 elements");
-					}
-					outHigh = input[0];
-					outHigh = input[1];
-				}
-
-
-				function scale(value){
-					var shift = 0;
-					for(var i=0;i<ranges.length;i++){
-						if(value>ranges[i].x){
-							shift+= ranges[i].shift;
-						}
-					}
-					return value - shift;
-
-				}
-
-				return function(value){
-					scale(value);
-					this.range=range;
-					this.domain=domain;
-					}
-			}
 
 			y = d3.scale.linear()
 			.range([height, 0]);
 
-			x.domain(d3.extent(_state, function(d) { return d.workingTime;  }));
-			y.domain(d3.extent(_state, function(d) { return d.numberOfLines;  }));
+			// Specidy the domain of the input values
+			x.domain(d3.extent(_state, function(d) { return d.workingTime; }));
+			y.domain(d3.extent(_state, function(d) { return d.numberOfLines; }));
 
+			// Create the axis
 			xAxis = d3.svg.axis()
 			.scale(x)
 			.orient("bottom");
@@ -151,32 +102,31 @@ define(['react','d3'],function(React,d3){
 			.scale(y)
 			.orient("left");
 
-			// Loc line
+			// Create the line function
 			line = d3.svg.line()
-			.x(function(d) { return x(d.workingTime);  })
-			.y(function(d) { return y(d.numberOfLines);  })
-			.interpolate('step-after');
+			.x(function(d) { return x(d.workingTime); })
+			.y(function(d) { return y(d.numberOfLines); })
+			.interpolate("step-after");
 
-			// Markers area
+			// Create markers area function
 			markersArea = d3.svg.area()
-			.x(function(d) { return x(d.workingTime);  })
-			.y1(function(d) { return y(d.numberOfMarkers*5);  })
-			.y0(height)
-			.interpolate('step-after');
+			.x(function(d) { return x(d.workingTime); })
+			.y1(function(d) { return y(d.numberOfMarkers*5); })
+			.y0(height) // Lower value of area for each point
+			.interpolate("step-after");
 
+			// Create tests area function
 			testsArea = d3.svg.area()
-			.x(function(d) { return x(d.workingTime);  })
-			.y1(function(d) { return y(d.numberOfFailedTests*10);  })
-			.y0(height)
-			.interpolate('step-after');
-
-
+			.x(function(d) { return x(d.workingTime); })
+			.y1(function(d) { return y(d.numberOfFailedTests*10); })
+			.y0(height) // Lower value of area for each point
+			.interpolate("step-after");
 
 			// Add X-Axis
 			svg.append("g")
 			.attr("class", "x axis")
 			.attr("transform", "translate(0," + height + ")")
-			.call(xAxis)
+			.call(xAxis) // Uses function on each created element
 			.append("text")
 			.attr("y", -15)
 			.attr("x", width)
@@ -196,16 +146,14 @@ define(['react','d3'],function(React,d3){
 			.style("text-anchor", "end")
 			.text("LOC");
 
-			// Add path
-			console.log("CREATE: Setting path state: ",_state,svg.selectAll("path.loc").data());
+			// Add path elements
 			var lines = svg.append("g")
-			.attr("class","lines")
-			
+			.attr("class","lines");
+
 			lines.selectAll("path.loc").data([_state]).enter()
 			.append("path")
 			.attr("class", "line loc")
 			.attr("d", line);
-
 
 			lines.selectAll("path.markers").data([_state]).enter()
 			.append("path")
@@ -217,59 +165,49 @@ define(['react','d3'],function(React,d3){
 			.attr("class", "area tests")
 			.attr("d", testsArea);
 
-			var breaksGroup = svg.append("g")
-			.attr("class","breaks")
+			// Create break group
+			svg.append("g")
+			.attr("class","breaks");
 
 
 			// Add tooltip element
-			tooltip = d3.select("body").append("div")   
-			    .attr("class", "chartTooltip")               
-				.style("opacity", 0);
-
-
+			tooltip = d3.select("body").append("div")
+			.attr("class", "chartTooltip")
+			.style("opacity", 0);
 
 			update(_state);
 		}
 
 		function update(state){
-			console.log("Updating chart: ",state)
 			_state = state;
-			var scales = _setScales();
 			_drawPoints(state);
 		}
 
 		function showToolTip(d){
-			tooltip.html("Idle for: "+(d.idle/60000).toFixed(1)+" min")
+			tooltip.html("Idle for: "+(d.idle/60000).toFixed(1)+" min");
 			tooltip.transition().duration(150)
 			.style("opacity",1)
-			.style("left", (d3.event.pageX - tooltip[0][0].offsetWidth/2) + "px")     
+			.style("left", (d3.event.pageX - tooltip[0][0].offsetWidth/2) + "px")
 			.style("top", (d3.event.pageY - 45) + "px")
-			.style("visibility","visible")
-
-							            
-		}                  
+			.style("visibility","visible");
+		}
 
 		function hideToolTip(d){
 			tooltip.transition().duration(150)
 			.style("opacity",0)
-			.style("visibility","hidden")
-		}
-
-		function _setScales(){
-
+			.style("visibility","hidden");
 		}
 
 		function _drawPoints(state){
-		   window.line = line;
-		   window.svg = svg;
-		   window.state = _state;
-			console.log("UPDATE: Setting path state: ",state,svg.selectAll(".lines path").data());
-			console.log("Name: ",state[0].name)
-			
-			x.domain([0,d3.max(_state, function(d) { return d.workingTime;  })]);
-			y.domain([0,d3.max(state, function(d) { return d.numberOfLines; })]);
-			console.log("Range: ",d3.extent(state, function(d) { return d.numberOfLines; }).reverse())
+			window.line = line;
+			window.svg = svg;
+			window.state = _state;
 
+			// Set new domain
+			x.domain([0,d3.max(_state, function(d) { return d.workingTime; })]);
+			y.domain([0,d3.max(state, function(d) { return d.numberOfLines; })]);
+
+			// Set new axis
 			xAxis = d3.svg.axis()
 			.scale(x)
 			.orient("bottom");
@@ -277,55 +215,55 @@ define(['react','d3'],function(React,d3){
 			yAxis = d3.svg.axis()
 			.scale(y)
 			.orient("left");
-		//	svg.selectAll(".x.axis").call(xAxis);
-			svg.transition().duration(500).selectAll(".y.axis").call(yAxis)
-			svg.transition().duration(500).selectAll(".x.axis").call(xAxis)
-			
-			
+
+			// Transition axis
+			svg.transition().duration(500).selectAll(".y.axis").call(yAxis);
+			svg.transition().duration(500).selectAll(".x.axis").call(xAxis);
+
+			// Set new data and transition path
 			svg.selectAll(".lines path.loc").data([state])
 			.transition().duration(500)
 			.attr("class", "line loc")
 			.attr("d", line);
 
-			var markerPath = svg.selectAll(".lines path.markers").data([state])
-			markerPath.enter().append("path")
+			// Set new data and create new elements (append is the subtraction of previous data)
+			var markerPath = svg.selectAll(".lines path.markers").data([state]);
+			markerPath.enter().append("path");
 			markerPath.transition().duration(500)
 			.attr("class", "area markers")
 			.attr("d", markersArea);
 
-			markerPath.exit().remove()
+			// Remove elements that are not part of data anymore
+			markerPath.exit().remove();
 
+			// Get test data
+			var tests = _state.filter(function(state){if(state.numberOfFailedTests > 0){return state;}});
 
-			var tests = _state.filter(function(state){if(state.numberOfFailedTests > 0){return state;}})
-			console.log("tests",tests);
-
-			var testPath = svg.selectAll(".lines").selectAll("path.tests").data([tests])
-			testPath.enter().append("path")
+			// Create tests path element
+			var testPath = svg.selectAll(".lines").selectAll("path.tests").data([tests]);
+			testPath.enter().append("path");
 			testPath.transition().duration(500)
 			.attr("class", "area tests")
 			.attr("d", testsArea);
 
 			testPath.exit().remove();
 
+			// Get breaks data
 			var breaks = _state.filter(function(state){if(state.idle !== undefined){return state;}})
 
 			var breakElements = svg.selectAll(".breaks");
 			var bel = breakElements.selectAll(".dot").data(breaks)
-			
-			bel.enter().append("circle")
-			bel
-			.attr("class","dot")
+
+			bel.enter().append("circle");
+
+			bel.attr("class","dot")
 			.attr("r",4.5)
 			.attr("cx",function(d){return x(d.workingTime)})
 			.attr("cy",function(d){return y(d.numberOfLines)})
 			.on("mouseover",showToolTip)
-			.on("mouseout",hideToolTip)
+			.on("mouseout",hideToolTip);
 
 			bel.exit().remove();
-
-
-
-
 		}
 
 		function destroy(){
@@ -333,10 +271,9 @@ define(['react','d3'],function(React,d3){
 		}
 
 		return {
-			update:update,
-			destroy:destroy
+			update: update,
+			destroy: destroy
 		};
-
 	};
 
 	return LocOverTimeChart;

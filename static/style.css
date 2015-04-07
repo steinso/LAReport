@@ -176,6 +176,26 @@
 
 }
 
+.chart .markers{
+	fill: rgba(255, 174, 0, 0.19);
+}
+
+.chart circle.dot{
+	fill: rgba(255, 255, 255, 0.38);
+	  stroke: rgba(94, 94, 94, 0.6);
+	    stroke-width: 1px;
+}
+
+.chartTooltip{
+	position:absolute;
+
+	border: 1px solid rgba(0, 0, 0, 0.560784);
+	padding: 10px;
+	border-radius: 5px;
+	background: white;
+	font-family: "Open Sans";
+	font-size: 11px;
+}
 .flex{
 	display:flex;
 	flex-flow:row wrap;

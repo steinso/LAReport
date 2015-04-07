@@ -50,6 +50,9 @@ define(['react','d3'],function(React,d3){
 		var _props = props;
 		var svg;
 		var line;
+		var markersArea;
+		var testsArea;
+		var tooltip;
 
 		var yAxis;
 		var xAxis;
@@ -148,10 +151,27 @@ define(['react','d3'],function(React,d3){
 			.scale(y)
 			.orient("left");
 
+			// Loc line
 			line = d3.svg.line()
 			.x(function(d) { return x(d.workingTime);  })
 			.y(function(d) { return y(d.numberOfLines);  })
 			.interpolate('step-after');
+
+			// Markers area
+			markersArea = d3.svg.area()
+			.x(function(d) { return x(d.workingTime);  })
+			.y1(function(d) { return y(d.numberOfMarkers*5);  })
+			.y0(height)
+			.interpolate('step-after');
+
+			testsArea = d3.svg.area()
+			.x(function(d) { return x(d.workingTime);  })
+			.y1(function(d) { return y(d.numberOfFailedTests*10);  })
+			.y0(height)
+			.interpolate('step-after');
+
+
+
 			// Add X-Axis
 			svg.append("g")
 			.attr("class", "x axis")
@@ -177,14 +197,36 @@ define(['react','d3'],function(React,d3){
 			.text("LOC");
 
 			// Add path
-			console.log("CREATE: Setting path state: ",_state,svg.selectAll("path").data());
+			console.log("CREATE: Setting path state: ",_state,svg.selectAll("path.loc").data());
 			var lines = svg.append("g")
 			.attr("class","lines")
 			
-			lines.selectAll("path").data([_state]).enter()
+			lines.selectAll("path.loc").data([_state]).enter()
 			.append("path")
-			.attr("class", "line")
+			.attr("class", "line loc")
 			.attr("d", line);
+
+
+			lines.selectAll("path.markers").data([_state]).enter()
+			.append("path")
+			.attr("class", "area markers")
+			.attr("d", markersArea);
+
+			lines.selectAll("path.tests").data([]).enter()
+			.append("path")
+			.attr("class", "area tests")
+			.attr("d", testsArea);
+
+			var breaksGroup = svg.append("g")
+			.attr("class","breaks")
+
+
+			// Add tooltip element
+			tooltip = d3.select("body").append("div")   
+			    .attr("class", "chartTooltip")               
+				.style("opacity", 0);
+
+
 
 			update(_state);
 		}
@@ -194,6 +236,23 @@ define(['react','d3'],function(React,d3){
 			_state = state;
 			var scales = _setScales();
 			_drawPoints(state);
+		}
+
+		function showToolTip(d){
+			tooltip.html("Idle for: "+(d.idle/60000).toFixed(1)+" min")
+			tooltip.transition().duration(150)
+			.style("opacity",1)
+			.style("left", (d3.event.pageX - tooltip[0][0].offsetWidth/2) + "px")     
+			.style("top", (d3.event.pageY - 45) + "px")
+			.style("visibility","visible")
+
+							            
+		}                  
+
+		function hideToolTip(d){
+			tooltip.transition().duration(150)
+			.style("opacity",0)
+			.style("visibility","hidden")
 		}
 
 		function _setScales(){
@@ -223,13 +282,50 @@ define(['react','d3'],function(React,d3){
 			svg.transition().duration(500).selectAll(".x.axis").call(xAxis)
 			
 			
-			svg.selectAll(".lines path").data([state])
+			svg.selectAll(".lines path.loc").data([state])
 			.transition().duration(500)
-			.attr("class", "line")
+			.attr("class", "line loc")
 			.attr("d", line);
 
+			var markerPath = svg.selectAll(".lines path.markers").data([state])
+			markerPath.enter().append("path")
+			markerPath.transition().duration(500)
+			.attr("class", "area markers")
+			.attr("d", markersArea);
 
+			markerPath.exit().remove()
+
+
+			var tests = _state.filter(function(state){if(state.numberOfFailedTests > 0){return state;}})
+			console.log("tests",tests);
+
+			var testPath = svg.selectAll(".lines").selectAll("path.tests").data([tests])
+			testPath.enter().append("path")
+			testPath.transition().duration(500)
+			.attr("class", "area tests")
+			.attr("d", testsArea);
+
+			testPath.exit().remove();
+
+			var breaks = _state.filter(function(state){if(state.idle !== undefined){return state;}})
+
+			var breakElements = svg.selectAll(".breaks");
+			var bel = breakElements.selectAll(".dot").data(breaks)
 			
+			bel.enter().append("circle")
+			bel
+			.attr("class","dot")
+			.attr("r",4.5)
+			.attr("cx",function(d){return x(d.workingTime)})
+			.attr("cy",function(d){return y(d.numberOfLines)})
+			.on("mouseover",showToolTip)
+			.on("mouseout",hideToolTip)
+
+			bel.exit().remove();
+
+
+
+
 		}
 
 		function destroy(){

@@ -2,15 +2,15 @@
 define(['react'],function(React){
 
 var FileList = React.createClass({
-		handleClick: function(fileName){
-			this.props.onFileChange(fileName);
+		handleClick: function(file){
+			this.props.onFileChange(file);
 
 		},
 		render: function() {
 			var rows = [];
 			var self = this;
 			this.props.files.forEach(function(file){
-				rows.push(<li className="fileRow" onClick={function(){self.handleClick(file.name)}}> {file.name} </li>);
+				rows.push(<li className="fileRow" onClick={function(){self.handleClick(file)}}> {file.name} </li>);
 			}.bind(this))
 
 			return (

@@ -1,9 +1,6 @@
-define(['react','d3','Store','providers/FileStatsProvider','jsx!components/ClientChooser','jsx!components/FileList','jsx!components/charts/LocOverTime','ServerBroker','models/Workspace','ClientId','jsx!components/StatsBar'],function(React,d3,Store,FileStatsProvider,ClientChooser,FileList,LocOverTimeChart,ServerBroker,Workspace,clientId,StatsBar){
+define(['react','d3','Store','providers/FileStatsProvider','jsx!components/ClientChooser','jsx!components/FileList','jsx!components/CategoryList','jsx!components/charts/LocOverTime','ServerBroker','models/Workspace','ClientId','jsx!components/StatsBar'],function(React,d3,Store,FileStatsProvider,ClientChooser,FileList,CategoryList,LocOverTimeChart,ServerBroker,Workspace,clientId,StatsBar){
 
 	var StatsPage = function(){
-		var _states = [];
-		var _files = [];
-		var _fileStates = [];
 
 		function getElement() {
 
@@ -20,8 +17,8 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 
 	var Dispatcher = function(statsStore){
 		var _states = []; //FileStates
-	 	var _statsSections = [];
-		var _files = [];
+		var _statsSections = [];
+		var _categories = [];
 		var _currentFile = {};
 		var _clientList = [];
 		var _selectedClient = "";
@@ -70,33 +67,17 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 			_calulateStatsSections();
 			return {
 				currentFile:_currentFile,
-				files: _files,
+				files: _categories,
 				states: _states,
 				clientList: _clientList,
 				statsSections: _statsSections,
 				selectedClient: _selectedClient
 			};
 		}
-		function onChangeFile (fileName){
-			_files.forEach(function(file){
-				if(file.name === fileName){
-					_currentFile = file;
-					console.log("File match1",file)
-				}
-			});
-
+		function onChangeFile (file){
+			_currentFile = file;
 			statsStore.setState(getCurrentState());
-			var statsProvider = new FileStatsProvider("");
-
-			/*
-			statsProvider.getStatsByFileName(_selectedClient,fileName).then(function(fileStates){
-				statsStore.setState(getCurrentState());
-			},function(error){
-				console.error("Error fetching stats for file: ",error);
-			});
-			*/
-
-			console.log("File was changed: ",fileName);
+			console.log("File was changed: ",file);
 		}
 
 		function onChangeClient(clientId){
@@ -108,10 +89,9 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 		}
 
 		function _updateStates(){
-			serverBroker.getClientFilesById(_selectedClient).then(function(files){
-				var workspace = new Workspace(files);
-				_files = workspace.getFileList();
-				console.log("Got new client files:",_files);
+			serverBroker.getClientCategoriesById(_selectedClient).then(function(categories){
+				_categories = categories;
+				console.log("Got new client files:",_categories);
 				statsStore.setState(getCurrentState());
 			},function(error){
 				alert("Client not found..");
@@ -163,12 +143,12 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 			if(this.state.clientList.length>1 && clientId.privilege!=="user"){
 				chooser = <ClientChooser clientList={this.state.clientList} currentElement={this.state.selectedClient} onClientChange={this._onClientChange}/>
 			}
-			
+
 			return (
 				<div className="flex">
 				<StatsBar sections={this.state.statsSections} />
 				{chooser}
-				<FileList files={this.state.files} onFileChange={this._onFileChange}/>
+				<CategoryList categories={this.state.files} selectedElement={this.state.currentFile.name} onFileChange={this._onFileChange}/>
 				{chart}
 				{fileName}
 				</div>

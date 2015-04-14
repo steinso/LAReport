@@ -1,12 +1,10 @@
-define(["react","Store","jsx!components/FileList","ServerBroker"],function(React,Store,FileList,ServerBroker){
+define(["react", "Store", "jsx!components/FileList", "ServerBroker"], function(React, Store, FileList, ServerBroker){
 
-	var InspectPage= function(){
+	var InspectPage = function(){
 		function getElement(){
 			var repoStore = new Store();
-
-			var FileStateTimeLapseElement = React.createElement(FileStateTimeLapse,{store:repoStore});
+			var FileStateTimeLapseElement = React.createElement(FileStateTimeLapse, {store: repoStore});
 			return FileStateTimeLapseElement;
-
 		}
 
 		return {
@@ -14,9 +12,8 @@ define(["react","Store","jsx!components/FileList","ServerBroker"],function(React
 		};
 	};
 
-
-
 	var FileStateTimeLapse = React.createClass({
+
 
 		getMarkersFile: function(state){
 			return this.getFileByName(state,".markers.json");

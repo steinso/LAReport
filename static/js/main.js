@@ -7,19 +7,25 @@ define(["react", "jquery", "StartUpLoading", "ServerBroker", "jsx!components/Mai
 
 		startUpLoading.setDone();
 		var pages = [
-			{name: "Stats", icon: "area-chart", getComponent: function(){
+			{name: "Overview", icon: "heartbeat", getComponent: function(){
+
+			}},
+			{name: "Stats", icon: "line-chart", getComponent: function(){
 				var Page = new StatsPage();
 				return Page.getElement();
 
-			}}/*,
+			}},
+			{name: "Individual", icon: "area-chart", getComponent: function(){
+				var Page = new StatsPage();
+				return Page.getElement();
+
+			}},
 			{name: "Inspect", icon: "code", getComponent: function(){
 
 				var Page = new InspectPage();
 				return Page.getElement();
-			}},
-			{name: "Heartbeat", icon: "heartbeat", getComponent: function(){
-
-			}}*/];
+			}}
+			];
 
 			var mainElement = React.createElement(MainReportPageComponent,{pages: pages});
 

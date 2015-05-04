@@ -75,7 +75,7 @@
 .fileList li{
 	padding:10px 10px;
 	cursor:pointer;
-	  border-bottom: 1px solid rgba(0, 0, 0, 0.23);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.23);
 }
 
 .fileList li:hover{
@@ -150,6 +150,22 @@
 	position: relative;
 }
 
+.chart{
+	height: 100%;
+	width: 100%;
+}
+
+.expressionExploration .title{
+	height: 25px;
+	width: 100%;
+	font-family: "Open Sans";
+	font-size: 20px;
+}
+
+.Chart.smallChart {
+	height: 200px;
+	width: 200px;
+}
 
 .chart .axis{
 	fill: rgb(60, 60, 61);
@@ -171,7 +187,7 @@
 .chart .line {
 	fill: none;
 	stroke: rgb(59, 195, 138);
-/*	stroke: steelblue;*/
+	/*	stroke: steelblue;*/
 	stroke-width: 1.3px;
 
 }
@@ -182,8 +198,8 @@
 
 .chart circle.dot{
 	fill: rgba(255, 255, 255, 0.38);
-	  stroke: rgba(94, 94, 94, 0.6);
-	    stroke-width: 1px;
+	stroke: rgba(94, 94, 94, 0.6);
+	stroke-width: 1px;
 }
 
 .chartTooltip{
@@ -198,10 +214,13 @@
 }
 .flex{
 	display:flex;
-	flex-flow:row wrap;
 	width: 100%;
 	align-content: flex-start;
 	align-items: stretch;
+}
+
+.row{
+	flex-flow:row wrap;
 }
 
 .overlay{
@@ -237,6 +256,7 @@
 	box-sizing:border-box;
 
 	-webkit-animation: appear 0.15s linear;
+	z-index: 105;
 }
 
 .listButtonBox .element{
@@ -304,47 +324,136 @@
 .statsBar .section{
 	flex-basis:400px;
 
-	  font-family: "Open Sans";
-			    color: rgb(42, 42, 42);
-				display: flex;
-				  flex-direction: column;
-				    justify-content: center;
-					  align-content: space-between;
-					    align-items: center;
+	font-family: "Open Sans";
+	color: rgb(42, 42, 42);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-content: space-between;
+	align-items: center;
 }
 
 
 .section.title {
-	  font-family: "Open Sans";
-	    font-weight: 600;
-		  line-height: 80px;
-		    padding-left: 22px;
-			  font-size: 20px;
-			    color: rgb(42, 42, 42);
+	font-family: "Open Sans";
+	font-weight: 600;
+	line-height: 80px;
+	padding-left: 22px;
+	font-size: 20px;
+	color: rgb(42, 42, 42);
 }
 
 .statsBar span.title {
-	  display: block;
-	    text-align: center;
-		  font-weight: 300;
+	display: block;
+	text-align: center;
+	font-weight: 300;
 
 }
 
 .statsBar span.value {
-	  font-size: 20px;
+	font-size: 20px;
 
-  }
+}
 
 .statsBar span.avg:before {
 	content:"/";
 }
 .statsBar span.avg {
-	  font-size: 12px;
-	    color: gray;
-		  text-align: center;
+	font-size: 12px;
+	color: gray;
+	text-align: center;
 
 }
 
 .center{
 	margin:auto;
+}
+
+table {
+	margin: 20px;
+	background: rgb(240, 240, 240);
+	font-family: "Open Sans";
+	font-size: 14px;
+	text-align: center;
+	border: 1px solid rgb(218, 218, 218);
+	border-spacing: 0;
+}
+
+table tr:nth-child(odd){
+	background: rgb(250, 250, 250);
+}
+
+table td{
+	padding: 10px;
+}
+
+table .left{
+	text-align: left;
+}
+.horizMenu li{
+	display: inline;
+	margin-left: 20px;
+	font-family: "Lato";
+	padding: 5px;
+	padding: 7px 15px;
+	border-radius: 6px;
+	cursor:pointer;
+}
+
+.horizMenu li.selected{
+	  background: rgba(181, 232, 213, 1);
+}
+
+.horizNav{
+	  background: rgb(22, 182, 158);
+}
+
+.expressionGraph{
+	height: 572px;
+	flex-direction: column;
+}
+
+.expressionGraph .title{
+
+	line-height: 30px;
+	font-size: 26px;
+	font-family: "Open Sans";
+	color: rgb(30, 37, 40);
+	padding: 20px;
+}
+
+.expressionGraph .title:hover .delete{
+	display: inline-block;
+}
+
+.expressionGraph .title .delete{
+	display: none;
+
+	font-family: "Lato";
+	font-weight: bolder;
+	font-size: 17px;
+	color: rgba(174, 68, 68, 0.59);
+	cursor: pointer;
+	margin: 0;
+	padding: 0;
+	padding-left: 5px;
+
+}
+
+.subtitle {
+	font-family: "Lato";
+	font-size: 20px;
+	font-weight: 300;
+	padding: 10px;
+	color: rgb(30, 37, 40);
+
+}
+
+.addExpression{
+	font-family: "Open Sans";
+	font-size: 15px; 
+}
+
+.addExpression div{
+	padding: 5px;
 }

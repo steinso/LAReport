@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "jquery", "StartUpLoading", "ServerBroker", "jsx!components/MainReportPageComponent", "jsx!components/pages/StatsPage", "jsx!components/pages/InspectPage", "ClientId"], function(React, $, StartUpLoading, ServerBroker, MainReportPageComponent, StatsPage, InspectPage, clientId){
+define(["react", "jquery", "StartUpLoading", "ServerBroker", "jsx!components/MainReportPageComponent", "jsx!components/pages/OverallStatsPage", "jsx!components/pages/StatsPage", "jsx!components/pages/ExplorePage", "jsx!components/pages/InspectPage", "ClientId"], function(React, $, StartUpLoading, ServerBroker, MainReportPageComponent, OverallStatsPage, StatsPage, ExplorePage, InspectPage, clientId){
 
 	var startUpLoading = new StartUpLoading();
 
@@ -11,17 +11,18 @@ define(["react", "jquery", "StartUpLoading", "ServerBroker", "jsx!components/Mai
 
 			}},
 			{name: "Stats", icon: "line-chart", getComponent: function(){
-				var Page = new StatsPage();
+				var Page = new OverallStatsPage();
 				return Page.getElement();
-
+			}},
+			{name: "Explore", icon: "magic", getComponent: function(){
+				var Page = new ExplorePage();
+				return Page.getElement();
 			}},
 			{name: "Individual", icon: "area-chart", getComponent: function(){
 				var Page = new StatsPage();
 				return Page.getElement();
-
 			}},
 			{name: "Inspect", icon: "code", getComponent: function(){
-
 				var Page = new InspectPage();
 				return Page.getElement();
 			}}

@@ -43,6 +43,39 @@ app.get("/timeLapse/:clientId", function(req, res){
 	});
 });
 
+app.get("/markertypes", function(req, res){
+
+	var url = LASTORE_URL+"markertypes";
+    var log = new Log("unknown", "MarkerTypes");
+
+	request.get(url,function(error,response,body){
+		log.print();
+		res.send(body);
+	});
+});
+
+app.get("/markertypes/category", function(req, res){
+
+	var url = LASTORE_URL+"markertypes/category";
+    var log = new Log("unknown", "CatMarkerTypes");
+
+	request.get(url,function(error,response,body){
+		log.print();
+		res.send(body);
+	});
+});
+
+app.get("/category/user", function(req, res){
+
+	var url = LASTORE_URL+"category/user";
+    var log = new Log("unknown", "Users in category:"+req.query);
+
+	request({url: url, method: "GET", qs: req.query},function(error,response,body){
+		log.print();
+		res.send(body);
+	});
+});
+
 app.use(express.static(__dirname + "/static"));
 
 app.listen(PORT, function(){

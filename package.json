@@ -10,7 +10,8 @@
   "dependencies": {
     "express": "*",
     "gulp": "*",
-    "gulp-babel": "*"
+    "gulp-babel": "*",
+    "typed": "git+http://gitlab.steinsorhus.com/steinso/typedjs.git"
   },
   "devDependencies": {
     "babel": "^4.6.1",

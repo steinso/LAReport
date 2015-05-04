@@ -1,4 +1,4 @@
-define(['ClientId','providers/FileStatsProvider'],function(user,FileStatsProvider){
+define(["jquery", "ClientId", "providers/FileStatsProvider"], function($, user, FileStatsProvider){
 	/*
 	 * Singleton that handles communication with the server
 	 */
@@ -99,7 +99,6 @@ define(['ClientId','providers/FileStatsProvider'],function(user,FileStatsProvide
 			return got;
 
 		};
-		window.testCombineStates = testCombineStates;
 
 		var _combineStates = function(files){
 			var combinedStates = []; 
@@ -168,8 +167,7 @@ define(['ClientId','providers/FileStatsProvider'],function(user,FileStatsProvide
 				var fileStatsProvider = new FileStatsProvider();
 
 				$.getJSON("timeLapse/"+clientId, function(data) {
-					console.log("GOT ",data);
-					console.log("Parsing data");
+					console.log("Parsing timelapse data");
 					data = data.filter(_filterIrrelevantFiles)
 					data.forEach(function(file){
 						fileStatsProvider.getStatsOfFile(file);
@@ -204,6 +202,15 @@ define(['ClientId','providers/FileStatsProvider'],function(user,FileStatsProvide
 			});
 		};
 
+		var getClientsInCategory = function(category){
+			return new Promise(function(resolve,reject){
+
+				$.getJSON("category/client", function(data) {
+					resolve(data);
+				});
+			});
+		};
+
 		var getClientList= function(){
 			return new Promise(function(resolve,reject){
 
@@ -223,10 +230,29 @@ define(['ClientId','providers/FileStatsProvider'],function(user,FileStatsProvide
 			});
 		};
 
+		var getMarkerTypes = function(){
+			return new Promise(function(resolve, reject){
+				$.getJSON("markertypes/", function(data) {
+					resolve(data);
+				});
+			});
+		};
+
+		var getMarkerTypesByCategory = function(){
+			return new Promise(function(resolve, reject){
+				$.getJSON("markertypesbycategory/", function(data) {
+					resolve(data);
+				});
+			});
+		};
+
 		return{
 			getClientFilesById: getClientFilesById,
 			getClientCategoriesById: getClientCategoriesById,
+			getClientsInCategory:getClientsInCategory,
 			getClientId: getClientId,
+			getMarkerTypes: getMarkerTypes,
+			getMarkerTypesByCategory: getMarkerTypesByCategory,
 			getClientList: getClientList
 		};
 	};

@@ -56,9 +56,16 @@ module.exports = {
 
 	plugins: [
 		DevEnvPlugin,
+		// keeps hashes consistent between compilations
+		new webpack.optimize.OccurenceOrderPlugin(),
+		// minifies your code
+		new webpack.optimize.UglifyJsPlugin({
+			compressor: {
+				warnings: false
+			}
+		}),
 		/*new ExtractTextPlugin('[name].css'),*/
 		new webpack.HotModuleReplacementPlugin(),
 		new webpack.NoErrorsPlugin()    // don't reload if there are errors
-
 	]
 };

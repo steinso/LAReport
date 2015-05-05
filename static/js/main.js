@@ -40,8 +40,7 @@ require("style.css");
 	function startup(){
 		var serverBroker = new ServerBroker();
 		if(clientId.id == null){
-			//var nickname= prompt("Enter your nickname:");
-			var nickname = "";
+			var nickname= prompt("Enter your nickname:");
 			clientId.id = nickname;
 			serverBroker.getClientId(nickname).then(function(id){
 				if(id === undefined){

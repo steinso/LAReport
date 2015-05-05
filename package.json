@@ -4,7 +4,7 @@
   "description": "Learning Analytics Report Provider",
   "author": "Stein Sorhus <stein.sorhus@gmail.com>",
   "scripts": {
-    "test": "mocha",
+    "test": "jest",
     "start": "node LAReportServer.js",
     "build": "webpack --config webpack.build.config.js",
     "watch": "webpack-dev-server --config webpack.dev.config.js"
@@ -15,6 +15,7 @@
     "gulp": "*",
     "gulp-babel": "*",
     "react": "^0.13.2",
+    "react-tools": "^0.13.2",
     "typed": "git+http://gitlab.steinsorhus.com/steinso/typedjs.git"
   },
   "devDependencies": {
@@ -25,6 +26,7 @@
     "css-loader": "^0.10.1",
     "es6-promise": "^2.0.1",
     "extract-text-webpack-plugin": "^0.5.0",
+    "jest-cli": "^0.4.1",
     "mocha": "*",
     "react": "^0.13.2",
     "react-hot-loader": "^1.2.6",
@@ -34,5 +36,16 @@
     "url-loader": "^0.5.5",
     "webpack": "^1.8.11",
     "webpack-dev-server": "^1.8.2"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/reactTestPreprocessor.js",
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react"
+    ],
+	"testDirectoryName": "clientSide",
+	"testPathDirs": [
+	   "<rootDir>/test/"
+			       
+	]
   }
 }

@@ -10,7 +10,7 @@ import StatsBar from "components/StatsBar";
 		function getElement() {
 
 			var statsStore = new Store();
-			dispatcher = new Dispatcher(statsStore);
+			var dispatcher = new Dispatcher(statsStore);
 
 			return React.createElement(OverallStatsPageComponent,{store: statsStore,dispatcher: dispatcher});
 		}

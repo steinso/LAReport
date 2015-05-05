@@ -13,7 +13,7 @@ import StatsBar from "components/StatsBar";
 		function getElement() {
 
 			var statsStore = new Store();
-			dispatcher = new Dispatcher(statsStore);
+			var dispatcher = new Dispatcher(statsStore);
 
 			return React.createElement(StatsPageComponent,{store:statsStore,dispatcher:dispatcher});
 		}

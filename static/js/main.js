@@ -1,5 +1,6 @@
 "use strict";
-define(["react", "jquery", "StartUpLoading", "ServerBroker", "jsx!components/MainReportPageComponent", "jsx!components/pages/OverallStatsPage", "jsx!components/pages/StatsPage", "jsx!components/pages/ExplorePage", "jsx!components/pages/InspectPage", "ClientId"], function(React, $, StartUpLoading, ServerBroker, MainReportPageComponent, OverallStatsPage, StatsPage, ExplorePage, InspectPage, clientId){
+define(["react", "jquery", "StartUpLoading", "ServerBroker", "components/MainReportPageComponent", "components/pages/OverallStatsPage", "components/pages/StatsPage", "components/pages/ExplorePage", "components/pages/InspectPage", "ClientId"], function(React, $, StartUpLoading, ServerBroker, MainReportPageComponent, OverallStatsPage, StatsPage, ExplorePage, InspectPage, clientId){
+require("style.css");
 
 	var startUpLoading = new StartUpLoading();
 
@@ -39,7 +40,8 @@ define(["react", "jquery", "StartUpLoading", "ServerBroker", "jsx!components/Mai
 	function startup(){
 		var serverBroker = new ServerBroker();
 		if(clientId.id == null){
-			var nickname= prompt("Enter your nickname:");
+			//var nickname= prompt("Enter your nickname:");
+			var nickname = "";
 			clientId.id = nickname;
 			serverBroker.getClientId(nickname).then(function(id){
 				if(id === undefined){

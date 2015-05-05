@@ -1,4 +1,8 @@
-define(["react", "Store", "jsx!components/FileList", "ServerBroker"], function(React, Store, FileList, ServerBroker){
+//define(["react", "Store", "jsx!components/FileList", "ServerBroker"], function(React, Store, FileList, ServerBroker){
+import React from "react";
+import Store from "Store";
+import FileList from "components/FileList";
+import ServerBroker from "ServerBroker";
 
 	var InspectPage = function(){
 		function getElement(){
@@ -111,5 +115,5 @@ define(["react", "Store", "jsx!components/FileList", "ServerBroker"], function(R
 	});
 
 
-return InspectPage;
-});
+export default InspectPage;
+

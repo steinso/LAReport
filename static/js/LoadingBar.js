@@ -1,5 +1,3 @@
-define(function(){
-
 function LoadingBar(onFinished,onProgress){
 	var progress = 0;
 	var done =false;
@@ -41,5 +39,4 @@ function LoadingBar(onFinished,onProgress){
 		start:start
 	};
 }
-return LoadingBar;
-});
+export default LoadingBar;

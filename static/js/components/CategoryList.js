@@ -1,5 +1,6 @@
 
-define(['react','jsx!components/FileList'],function(React,FileList){
+import React from 'react';
+import FileList from 'components/FileList';
 
 var CategoryList = React.createClass({
 	propTypes: {
@@ -8,32 +9,31 @@ var CategoryList = React.createClass({
 		selectedElement: React.PropTypes.string
 
 	},
-		handleClick: function(file){
-			this.props.onFileChange(file);
+	handleClick: function(file){
+		this.props.onFileChange(file);
 
-		},
-		render: function() {
-			var rows = [];
-			var self = this;
-			var className = "categoryRow";
+	},
+	render: function() {
+		var rows = [];
+		var self = this;
+		var className = "categoryRow";
 
-			this.props.categories.forEach(function(file){
-				if(file.name === this.props.selectedElement){
-					className += " selected";
-				}
-				rows.push(<li className={className} onClick={function(){self.handleClick(file)}}> {file.name} </li>);
+		this.props.categories.forEach(function(file){
+			if(file.name === this.props.selectedElement){
+				className += " selected";
+			}
+			rows.push(<li className={className} onClick={function(){self.handleClick(file)}}> {file.name} </li>);
 
-				if(file.name === this.props.selectedElement){
-					rows.push(<li className="files"><FileList files={file.files} onFileChange={this.handleClick} /> </li>);
-				}
-			}.bind(this))
+			if(file.name === this.props.selectedElement){
+				rows.push(<li className="files"><FileList files={file.files} onFileChange={this.handleClick} /> </li>);
+			}
+		}.bind(this))
 
-			return (
-				<ul className="fileList">
-				{rows}
-				</ul>
-			);
-		}
-	});
-		return CategoryList; 
+		return (
+			<ul className="fileList">
+			{rows}
+			</ul>
+		);
+	}
 });
+export default CategoryList; 

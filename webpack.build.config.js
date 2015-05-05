@@ -1,0 +1,64 @@
+var webpack           = require('webpack');
+var path              = require('path');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+var DevEnvPlugin = new webpack.DefinePlugin({
+	'process.env': {
+		'NODE_ENV': JSON.stringify('development')
+
+	}
+});
+
+/*var sassLoaders = [
+  'css-loader',
+  'autoprefixer-loader' +
+  '?browsers=last 2 version',
+  '?includePaths[]=' + path.resolve(__dirname, './js')    // includes app dir for libsass
+
+  ];
+  */
+
+module.exports = {
+
+	entry: [
+			'./static/js/main.js'
+	],
+
+	debug: true,
+	devtool: 'eval',
+
+	output: {
+		path: './static/',
+		filename: 'bundle.js'
+	},
+
+	externals: {
+		"jquery": "jQuery",
+		"lodash": "lodash",
+		"jsx": "jsx",
+		"d3": "d3"
+	},
+
+	resolve: {
+		// Allow to omit extensions when requiring these files
+		extensions: ['', '.scss', '.js', '.jsx'],
+		modulesDirectories: [ 'js/', 'node_modules/']
+	},
+
+	module: {
+		loaders: [
+			{ test: /\.js?$/,  loaders: ['react-hot', 'babel'], exclude: /node_modules/  },
+			/*{ test: /\.css$/,  loader: ExtractTextPlugin.extract('style-loader', 'css-loader')  },*/
+			{ test: /\.css$/,  loader: 'style!css' }
+			/*{ test: /\.(jpg|png)$/,  loader: 'url-loader?limit=8192'  }*/
+		]
+	},
+
+	plugins: [
+		DevEnvPlugin,
+		/*new ExtractTextPlugin('[name].css'),*/
+		new webpack.HotModuleReplacementPlugin(),
+		new webpack.NoErrorsPlugin()    // don't reload if there are errors
+
+	]
+};

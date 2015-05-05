@@ -1,33 +1,32 @@
-define(['LoadingBar'],function(LoadingBar){
+import LoadingBar from "LoadingBar";
+import $ from "jquery";
 
 // Extends LoadingBar
 var StartUpLoading = function(){
 	var loading;
 	var progressElement;
-	var loadingElemt;
+	var loadingElement;
 
 	var _constructor = function(){
 
 		loading = new LoadingBar(_loadingFinished,_updateLoadingBar);
-		progressElement = $('.loadingProgressElement');
-		loadingElement = $('.loadingElement');
-		
+		progressElement = $(".loadingProgressElement");
+		loadingElement = $(".loadingElement");
 	};
 
 	var _loadingFinished = function(){
-		loadingElement.remove();	
+		loadingElement.remove();
 	};
 
 	var _updateLoadingBar = function(){
 		var percent = loading.getProgress();
-		progressElement.style('width',percent+"%");
+		progressElement.style("width",percent+"%");
 	};
-	
+
 	_constructor();
 
 	return loading;
 };
 
-return StartUpLoading;
+export default StartUpLoading;
 
-});

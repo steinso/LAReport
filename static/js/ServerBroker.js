@@ -4,6 +4,7 @@ define(["jquery", "ClientId", "providers/FileStatsProvider"], function($, user, 
 	 */
 
 	var ServerBroker = function(){
+		var SERVER_URL = "http://errorreport.steinsorhus.com/";
 
 		var _filterIrrelevantFiles = function(file){
 			var isRelevant = true;
@@ -166,7 +167,7 @@ define(["jquery", "ClientId", "providers/FileStatsProvider"], function($, user, 
 
 				var fileStatsProvider = new FileStatsProvider();
 
-				$.getJSON("timeLapse/"+clientId, function(data) {
+				$.getJSON(SERVER_URL+"timeLapse/"+clientId, function(data) {
 					console.log("Parsing timelapse data");
 					data = data.filter(_filterIrrelevantFiles)
 					data.forEach(function(file){
@@ -182,7 +183,7 @@ define(["jquery", "ClientId", "providers/FileStatsProvider"], function($, user, 
 
 				var fileStatsProvider = new FileStatsProvider();
 
-				$.getJSON("timeLapse/"+clientId, function(data) {
+				$.getJSON(SERVER_URL+"timeLapse/"+clientId, function(data) {
 					console.log("GOT ",data);
 					console.log("Parsing data");
 					data = data.filter(_filterIrrelevantFiles)
@@ -205,7 +206,7 @@ define(["jquery", "ClientId", "providers/FileStatsProvider"], function($, user, 
 		var getClientsInCategory = function(category){
 			return new Promise(function(resolve,reject){
 
-				$.getJSON("category/client", function(data) {
+				$.getJSON(SERVER_URL+"category/client", function(data) {
 					resolve(data);
 				});
 			});
@@ -214,7 +215,7 @@ define(["jquery", "ClientId", "providers/FileStatsProvider"], function($, user, 
 		var getClientList= function(){
 			return new Promise(function(resolve,reject){
 
-				$.getJSON("client", function(data) {
+				$.getJSON(SERVER_URL+"client", function(data) {
 					resolve(data);
 				});
 			});
@@ -223,7 +224,7 @@ define(["jquery", "ClientId", "providers/FileStatsProvider"], function($, user, 
 		var getClientId = function(name){
 			return new Promise(function(resolve,reject){
 
-				$.getJSON("client/"+name, function(data) {
+				$.getJSON(SERVER_URL+"client/"+name, function(data) {
 					var id= data.id;
 					resolve(id);
 				});
@@ -232,7 +233,7 @@ define(["jquery", "ClientId", "providers/FileStatsProvider"], function($, user, 
 
 		var getMarkerTypes = function(){
 			return new Promise(function(resolve, reject){
-				$.getJSON("markertypes/", function(data) {
+				$.getJSON(SERVER_URL+"markertypes/", function(data) {
 					resolve(data);
 				});
 			});

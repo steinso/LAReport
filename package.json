@@ -5,19 +5,34 @@
   "author": "Stein Sorhus <stein.sorhus@gmail.com>",
   "scripts": {
     "test": "mocha",
-    "start": "node LAReportServer.js"
+    "start": "node LAReportServer.js",
+    "build": "webpack --config webpack.build.config.js",
+    "watch": "webpack-dev-server --config webpack.dev.config.js"
   },
   "dependencies": {
+    "dotenv": "^1.1.0",
     "express": "*",
     "gulp": "*",
     "gulp-babel": "*",
+    "react": "^0.13.2",
     "typed": "git+http://gitlab.steinsorhus.com/steinso/typedjs.git"
   },
   "devDependencies": {
-    "babel": "^4.6.1",
+    "autoprefixer-loader": "^1.2.0",
+    "babel": "^5.1.10",
+    "babel-core": "^5.1.10",
+    "babel-loader": "^5.0.0",
+    "css-loader": "^0.10.1",
     "es6-promise": "^2.0.1",
+    "extract-text-webpack-plugin": "^0.5.0",
     "mocha": "*",
+    "react": "^0.13.2",
+    "react-hot-loader": "^1.2.6",
     "request": "^2.53.0",
-    "should": "^5.0.1"
+    "should": "^5.0.1",
+    "style-loader": "^0.12.1",
+    "url-loader": "^0.5.5",
+    "webpack": "^1.8.11",
+    "webpack-dev-server": "^1.8.2"
   }
 }

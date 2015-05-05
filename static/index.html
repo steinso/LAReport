@@ -1,37 +1,30 @@
 <html>
 <head>
 
-<!-- <script src="http://192.168.1.158:35729/livereload.js"></script> -->
-<script src="js/libs/knockout-3.2.0.js"></script>
-<!-- Plugin for requireJS to parse JSX sybtax -->
-<script  src="js/require.js"></script>
+<!-- 
+<script src="js/libs/jquery-1.11.1.min"></script> 
+	Use CDN for libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.8.0/lodash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+
 <script>
-
-require.config({
-	"baseUrl": "js",
-	"paths": {
-		"jquery"     : "libs/jquery-1.11.1.min",
-		"react"      : "libs/reactaddons-0.12.2",
-		"lodash"      : "libs/lodash.min",
-		"JSXTransformer": "libs/jsxtransformer-0.12.2",
-		"d3": "libs/d3.v3.min",
-		"text": "libs/text",
-		"jsx": "libs/jsx"
-	}
-})
-
-// Require main script
-require(['jsx!main'],function(main){
-
-		})
-
-
+// Set external variables that are from libsm they are defined in webpack.config
+		var jquery = $;
+		var lodash = _;
+		var d3 = d3;
+		var jsx = function(i){return i;};
 </script>
+
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700|Droid+Serif:400,700|Slabo+27px|Open+Sans:400,300,600,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+<!-- Stylesheet is required() in main.js, and packed automatically by webpack
 <link rel="stylesheet" type="text/css" href="style.css">
+-->
 </head>
 <body>
+<!-- Start with loading page -->
 <div class="loadingElement">
 	<div class="loadingProgressElement">π</div>
 	<div class="loadingProgress">Crunching numbers...
@@ -39,9 +32,5 @@ require(['jsx!main'],function(main){
 </div>
 
 <div id="body"></div>
-
-<!-- <input type="button" value="Select" onClick="onClickUpdate()">  -->
 </body>
-
-<!-- <script src="js/script.js"></script> -->
 </html>

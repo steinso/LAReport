@@ -1,4 +1,12 @@
-define(['react','d3','Store','providers/FileStatsProvider','jsx!components/ClientChooser','jsx!components/FileList','jsx!components/CategoryList','jsx!components/charts/LocOverTime','ServerBroker','models/Workspace','ClientId','jsx!components/StatsBar'],function(React,d3,Store,FileStatsProvider,ClientChooser,FileList,CategoryList,LocOverTimeChart,ServerBroker,Workspace,clientId,StatsBar){
+//define(["react","d3","Store","providers/FileStatsProvider","jsx!components/ClientChooser","jsx!components/FileList","jsx!components/CategoryList","jsx!components/charts/LocOverTime","ServerBroker","models/Workspace","ClientId","jsx!components/StatsBar"],function(React,d3,Store,FileStatsProvider,ClientChooser,FileList,CategoryList,LocOverTimeChart,ServerBroker,Workspace,clientId,StatsBar){
+import React from "react";
+import Store from "Store";
+import ClientChooser from "components/ClientChooser";
+import CategoryList from "components/CategoryList";
+import LocOverTimeChart from "components/charts/LocOverTime";
+import ServerBroker from "ServerBroker";
+import clientId from "ClientId";
+import StatsBar from "components/StatsBar";
 
 	var StatsPage = function(){
 
@@ -156,6 +164,5 @@ define(['react','d3','Store','providers/FileStatsProvider','jsx!components/Clien
 		}
 	});
 
-	return StatsPage; 
-});
+	export default StatsPage; 
 

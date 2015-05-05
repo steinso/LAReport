@@ -1,5 +1,9 @@
 //define(["react", "d3", "Store", "jsx!components/MarkerTypesList", "ServerBroker", "models/Workspace", "ClientId", "jsx!components/StatsBar"], function(React, d3, Store, MarkerTypesList, ServerBroker, Workspace, clientId, StatsBar){
-define(["react", "d3", "Store", "ServerBroker", "models/Workspace", "ClientId", "jsx!components/StatsBar"], function(React, d3, Store, ServerBroker, Workspace, clientId, StatsBar){
+//define(["react", "d3", "Store", "ServerBroker", "models/Workspace", "ClientId", "jsx!components/StatsBar"], function(React, d3, Store, ServerBroker, Workspace, clientId, StatsBar){
+import React from "react";
+import Store from "Store";
+import ServerBroker from "ServerBroker";
+import StatsBar from "components/StatsBar";
 
 	var OverallStatsPage = function(){
 
@@ -147,6 +151,5 @@ define(["react", "d3", "Store", "ServerBroker", "models/Workspace", "ClientId", 
 		}
 	});
 
-	return OverallStatsPage;
-});
+	export default OverallStatsPage;
 

@@ -1,5 +1,6 @@
 "use strict";
 
+require("dotenv").load();
 var express = require("express");
 var app = express();
 var Log = require("./Logger.js");
@@ -7,6 +8,18 @@ var request = require("request");
 var Promise = require("es6-promise").Promise;
 var LASTORE_URL = "http://localhost:50812/";
 var PORT = 50809;
+
+//CORS middleware
+app.use(function(req, res, next) {
+
+	if(process.env.ENVIRONMENT!=="Development"){next();return;}
+
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+	res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+	next();
+});
 
 app.get("/client/:nickname",function(req,res){
 

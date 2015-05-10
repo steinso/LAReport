@@ -249,11 +249,11 @@ define(["jquery", "ClientId", "providers/FileStatsProvider"], function($, user, 
 
 		return{
 			getClientFilesById: getClientFilesById,
-			getClientCategoriesById: getClientCategoriesById,
+			//getClientCategoriesById: getClientCategoriesById,
 			getClientsInCategory:getClientsInCategory,
 			getClientId: getClientId,
-			getMarkerTypes: getMarkerTypes,
-			getMarkerTypesByCategory: getMarkerTypesByCategory,
+			//getMarkerTypes: getMarkerTypes,
+			//getMarkerTypesByCategory: getMarkerTypesByCategory,
 			getClientList: getClientList
 		};
 	};

@@ -1,5 +1,16 @@
 "use strict";
-define(["react", "jquery", "StartUpLoading", "ServerBroker", "components/MainReportPageComponent", "components/pages/OverallStatsPage", "components/pages/StatsPage", "components/pages/ExplorePage", "components/pages/InspectPage", "ClientId"], function(React, $, StartUpLoading, ServerBroker, MainReportPageComponent, OverallStatsPage, StatsPage, ExplorePage, InspectPage, clientId){
+import React from "react";
+import $ from "jquery";
+import StartUpLoading from "StartUpLoading";
+import ServerBroker from "ServerBroker";
+import MainReportPageComponent from "components/MainReportPageComponent";
+import OverallStatsPage from "components/pages/OverallStatsPage";
+import StatsPage from "components/pages/StatsPage";
+import ExplorePage from "components/pages/ExplorePage";
+import ExamineExpressionPage from "components/pages/ExamineExpressionPage";
+import InspectPage from "components/pages/InspectPage";
+import clientId from "ClientId";
+
 require("style.css");
 
 	var startUpLoading = new StartUpLoading();
@@ -13,6 +24,10 @@ require("style.css");
 			}},
 			{name: "Stats", icon: "line-chart", getComponent: function(){
 				var Page = new OverallStatsPage();
+				return Page.getElement();
+			}},
+			{name: "Examine", icon: "eye", getComponent: function(){
+				var Page = new ExamineExpressionPage();
 				return Page.getElement();
 			}},
 			{name: "Explore", icon: "magic", getComponent: function(){
@@ -53,5 +68,5 @@ require("style.css");
 				initialiseUi();
 		}
 	}
+
 	startup();
-	});

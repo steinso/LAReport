@@ -78,10 +78,22 @@ app.get("/markertypes/category", function(req, res){
 	});
 });
 
-app.get("/category/user", function(req, res){
+app.get("/category/client", function(req, res){
 
-	var url = LASTORE_URL+"category/user";
-    var log = new Log("unknown", "Users in category:"+req.query);
+	var url = LASTORE_URL+"category/client";
+    var log = new Log("unknown", "Clients in category:"+req.query);
+
+	request({url: url, method: "GET", qs: req.query},function(error,response,body){
+		log.print();
+		res.send(body);
+	});
+});
+
+
+app.get("/category", function(req, res){
+
+	var url = LASTORE_URL+"category";
+    var log = new Log("unknown", "Categories:"+req.query);
 
 	request({url: url, method: "GET", qs: req.query},function(error,response,body){
 		log.print();

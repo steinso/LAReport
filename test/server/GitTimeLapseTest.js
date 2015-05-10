@@ -1,4 +1,4 @@
-var timelapse = require('../GitTimeLapse.js');
+var timelapse = require('../../GitTimeLapse.js');
 var should = require('should');
 
 describe("Gti timelapse",function(){

@@ -3,16 +3,16 @@ import React from "react";
 import Store from "Store";
 import ClientChooser from "components/ClientChooser";
 import StatsBar from "components/StatsBar";
-import ExplorePageController from "controllers/ExplorePageController";
+import ExamineExpressionPageController from "controllers/ExamineExpressionPageController";
 import ExpressionComponent from "components/ExpressionComponent";
 import AddExpressionModal from "components/AddExpressionModal";
 
 
-var ExplorePage = function(){
+var ExamineExpressionPage = function(){
 	function getElement() {
 		var statsStore = new Store();
-		var dispatcher = new ExplorePageController(statsStore);
-		return React.createElement(ExplorePageComponent,{store: statsStore,dispatcher: dispatcher});
+		var dispatcher = new ExamineExpressionPageController(statsStore);
+		return React.createElement(ExamineExpressionPageComponent,{store: statsStore,dispatcher: dispatcher});
 	}
 
 	return {
@@ -20,7 +20,7 @@ var ExplorePage = function(){
 	};
 };
 
-var ExplorePageComponent = React.createClass({
+var ExamineExpressionPageComponent = React.createClass({
 	propTypes: {
 		store: React.PropTypes.object,
 		dispatcher: React.PropTypes.object
@@ -47,23 +47,15 @@ var ExplorePageComponent = React.createClass({
 		this.props.dispatcher.onChangeCategory(category);
 	},
 
-	_onClientChange: function(client){
-		this.props.dispatcher.onChangeClient(client);
-	},
-
 	_onAddExpression: function(expression){
 		this.props.dispatcher.onAddExpression(expression);
 	},
 
 	render: function() {
 		var _this = this;
-		var relevant_states = {
-			"SomeUsers": this.state.states.userStates,
-			"SomeCategories": this.state.states.categoryStates,
-			"References": this.state.states.referenceStates
-		}
+		//No main on this expression
 		var _expressionComponents = this.state.expressions.map(function(expression){
-			return <ExpressionComponent expression={expression} states={relevant_states} main={_this.state.states.selectedState}/>;
+			return <ExpressionComponent expression={expression} main={_this.state.mainCategoryStates} states={_this.state.states}/>;
 
 		});
 
@@ -72,7 +64,6 @@ var ExplorePageComponent = React.createClass({
 			_expressionComponents = [];
 		}
 
-		var clientChooser = <ClientChooser clientList={this.state.clientList} currentElement={this.state.selectedClient} onClientChange={this._onClientChange} />;
 		var categoryNames = this.state.categoryList.map(function(category){return category.name;});
 		var categoryChooser = <ClientChooser clientList={categoryNames} currentElement={this.state.selectedCategory.name} onClientChange={this._onCategoryChange} />;
 		var addExpressionButton = <AddExpressionModal onAddExpression ={this._onAddExpression} expressionVariables={this.state.expressionVariables}/>;
@@ -81,7 +72,6 @@ var ExplorePageComponent = React.createClass({
 			<div className="flex row">
 			<StatsBar sections={this.state.statsSections} />
 			<div className="flex horizNav">
-			{clientChooser}
 			{categoryChooser}
 			{addExpressionButton}
 			</div>
@@ -91,5 +81,5 @@ var ExplorePageComponent = React.createClass({
 	}
 });
 
-export default ExplorePage;
+export default ExamineExpressionPage;
 

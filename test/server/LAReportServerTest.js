@@ -1,5 +1,5 @@
 
-var app  = require("../LAReportServer.js");
+var app  = require("../../LAReportServer.js");
 var assert = require("assert");
 var request = require("request");
 var should = require("should");

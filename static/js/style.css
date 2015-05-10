@@ -414,6 +414,10 @@ table .left{
 	flex-direction: column;
 }
 
+.expressionGraph.main{
+	flex-shrink: 3;
+}
+
 .expressionGraph .title{
 
 	line-height: 30px;

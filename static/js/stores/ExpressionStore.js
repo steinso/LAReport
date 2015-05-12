@@ -62,10 +62,11 @@ function ExpressionStore(){
 		var variables = Object.keys(expressionVariables);
 
 		variables.forEach(function(variable){
-			exprX = exprX.replace(variable,"state['"+expressionVariables[variable]+"']");
-			exprY = exprY.replace(variable,"state['"+expressionVariables[variable]+"']");
-			exprHumanReadableX = exprHumanReadableX.replace(variable,expressionVariables[variable]);
-			exprHumanReadableY = exprHumanReadableY.replace(variable,expressionVariables[variable]);
+			// Same as global replace, but requires less fiddling and has higher performance
+			exprX = exprX.split(variable).join("state['"+expressionVariables[variable]+"']");
+			exprY = exprY.split(variable).join("state['"+expressionVariables[variable]+"']");
+			exprHumanReadableX = exprHumanReadableX.split(variable).join(expressionVariables[variable]);
+			exprHumanReadableY = exprHumanReadableY.split(variable).join(expressionVariables[variable]);
 		});
 
 		// Yes, eval is no good, however this is client side, and is a prototype

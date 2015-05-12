@@ -61,6 +61,7 @@ function StateCombiner(){
 				time: lowestTime,
 				numberOfLines: 0,
 				numberOfFailedTests: 0,
+				numberOfTests: 0,
 				numberOfMarkers: 0
 			};
 
@@ -87,6 +88,7 @@ function StateCombiner(){
 				if(state === undefined){return;}
 
 				newState.numberOfFailedTests+= state.numberOfFailedTests;
+				newState.numberOfTests+= state.numberOfTests;
 			});
 
 			combinedStates.push(newState);

@@ -2,6 +2,26 @@
 import FileStatsProvider from "providers/FileStatsProvider";
 import StateCombiner from "processors/StateCombiner";
 
+class User{
+	constructor(obj){
+		this.files = obj.files;
+		this.categories = obj.categories;
+		this.clientId = obj.clientId;
+	}
+
+	getCategory(name,type){
+		var categoryFound = false;
+
+		this.categories.forEach((category)=>{
+			if(category.name === name && category.type === type){
+				categoryFound = category;
+			}
+		});
+
+		return categoryFound;
+	}
+}
+
 function ClientProcessor(){
 
 	function _filterIrrelevantFiles(file){
@@ -48,21 +68,28 @@ function ClientProcessor(){
 		return outputList;
 	}
 
-	function process(data){
+	function process(client){
 
 		var fileStatsProvider = new FileStatsProvider();
-		data = data.filter(_filterIrrelevantFiles);
-		data.forEach(function(file){
+		var files = client.files;
+		files = files.filter(_filterIrrelevantFiles);
+
+		files.forEach(function(file){
 			fileStatsProvider.getStatsOfFile(file);
 		});
 
-		data = _groupByCategory(data);
+		var categories = _groupByCategory(files);
 
-		data.forEach(function(category){
+		categories.forEach(function(category){
 			fileStatsProvider.getStatsOfFile(category);
 		});
 
-		return data;
+		client.files = files;
+		client.categories = categories;
+
+
+
+		return new User(client);
 	}
 
 	return {

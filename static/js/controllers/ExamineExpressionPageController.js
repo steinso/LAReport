@@ -62,10 +62,7 @@ var ExamineExpressionPageController = function(statsStore){
 		return new Promise(function(resolve, reject){
 
 			CategoryStore.getCategory(category.name, category.type).then(function(category){
-				_users = category.users.map(function(user){
-					return user[0];
-				});
-				_users = _users.filter(function(user){return user.states.length>1;})
+				_users = category.users;
 				resolve(category);
 			});
 		});
@@ -101,7 +98,6 @@ var ExamineExpressionPageController = function(statsStore){
 			//},{});
 		/*});*/
 
-		_states.userStates = _users.map(function(user){return user.states;});
 
 		return {
 			states: _states,
@@ -111,7 +107,8 @@ var ExamineExpressionPageController = function(statsStore){
 			statsSections: _statsSections,
 			expressions: ExpressionStore.getExpressions(),
 			expressionVariables: _expressionVariables,
-			mainCategoryStates: _mainCategoryStates
+			mainCategoryStates: _mainCategoryStates,
+			users: _users
 		};
 	}
 

@@ -10,12 +10,12 @@ function ClientStore(){
 	function getClient(clientId){
 		return new Promise(function(resolve, reject){
 
-			$.getJSON(Config.SERVER_URL+"timeLapse/"+clientId, function(data) {
+			$.getJSON(Config.SERVER_URL+"timeLapse/"+clientId, function(client) {
 
 				console.log("Parsing client data");
-				_clients[clientId] = ClientProcessor.process(data);
+				_clients[client.clientId] = ClientProcessor.process(client);
 
-				resolve(_clients[clientId]);
+				resolve(_clients[client.clientId]);
 			});
 		});
 	}

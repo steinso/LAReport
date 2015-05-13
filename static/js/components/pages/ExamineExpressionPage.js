@@ -53,9 +53,23 @@ var ExamineExpressionPageComponent = React.createClass({
 
 	render: function() {
 		var _this = this;
-		//No main on this expression
+		var category = _this.state.selectedCategory;
+		var states = _this.state.users.map(function(user){
+			var userCategory = user.getCategory(category.name, category.type);
+			if(userCategory === false){return false}
+
+			return {
+				title: user.clientId.substr(0,5),
+				states: userCategory.states 
+			};
+		});
+		states = states.filter((state)=>{return state !== false;})
+
+
+		var userStates = {"User": states};
+
 		var _expressionComponents = this.state.expressions.map(function(expression){
-			return <ExpressionComponent expression={expression} main={_this.state.mainCategoryStates} states={_this.state.states}/>;
+			return <ExpressionComponent expression={expression} main={_this.state.mainCategoryStates} states={userStates}/>;
 
 		});
 

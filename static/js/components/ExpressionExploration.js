@@ -11,6 +11,10 @@ var ExpressionExploration = React.createClass({
 	render: function() {
 		var _this = this;
 		var _graphs = this.props.states.map(function(state){
+			if(state.states.length === undefined){
+				console.warn("[ExpressionExploration]: Got state with no states array",state);
+				return;
+			}
 			return (<div>
 					<Chart className="smallChart" data={state.states} xFunction={_this.props.expression.xFunction} yFunction={_this.props.expression.yFunction}/>
 					<span> {state.title}</span>

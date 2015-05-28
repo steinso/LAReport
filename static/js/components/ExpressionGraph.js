@@ -1,3 +1,4 @@
+"use strict";
 import Chart from "components/charts/Chart";
 import React from "react";
 

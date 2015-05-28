@@ -37,7 +37,10 @@ define(['react','d3'],function(React,d3){
 		},
 
 		getChartState: function() {
-			return this.props.data;
+			return {
+				selected: this.props.selected,
+				states: this.props.data
+			};
 		},
 
 		componentWillUnmount: function() {
@@ -53,10 +56,10 @@ define(['react','d3'],function(React,d3){
 	});
 
 
-	var D3Chart = function(el,props,states){
+	var D3Chart = function(el,props,data){
 
 		var _el = el;
-		var _states = states;
+		var _states = data.states;
 		var svg;
 		var line;
 
@@ -72,8 +75,8 @@ define(['react','d3'],function(React,d3){
 		var xFunction = props.xFunction;
 		var yFunction = props.yFunction;
 
-		_constructor();
-		function _constructor(){
+		_constructor(data);
+		function _constructor(data){
 
 			console.log("Loc chart State: ",_states);
 
@@ -149,18 +152,34 @@ define(['react','d3'],function(React,d3){
 			.attr("class", "line loc")
 			.attr("d", line);
 
-			update(_states);
+			// Create test group
+			svg.append("g")
+			.attr("class","tests");
+
+
+			//Create selected group
+			svg.append("g")
+			.attr("class","selected");
+
+			update(data);
 		}
 
-		function update(state){
-			_states = state;
-			_drawPoints(state);
+		function update(data){
+			if(data.states === undefined){
+				console.warn("[Chart]: Got undefined states",data);
+				return;
+			}
+			_states = data.states;
+			_drawPoints(data.states);
+			if(data.selected !== null && data.selected !== undefined){
+				_drawSelected(data.selected);
+			}
 		}
 
 		function _drawPoints(state){
 
 			// Set new domain
-			x.domain([0,d3.max(_states, xFunction)]);
+			x.domain([0,d3.max(state, xFunction)]);
 			y.domain([0,d3.max(state, yFunction)]);
 
 			// Set new axis
@@ -181,6 +200,33 @@ define(['react','d3'],function(React,d3){
 			.transition().duration(500)
 			.attr("class", "line loc")
 			.attr("d", line);
+
+
+
+			var tests = state.filter(function(state){return state.ranTest});
+
+			var breakElements = svg.selectAll(".tests");
+			var bel = breakElements.selectAll(".testRan").data(tests)
+
+			bel.enter().append("circle");
+
+			bel.attr("class","testRan")
+			.attr("r",1.5)
+			.attr("cx",function(d){return x(xFunction(d));})
+			.attr("cy",function(d){return y(yFunction(d));});
+
+			bel.exit().remove();
+
+		}
+
+		function _drawSelected(state){
+			
+			var selected = svg.selectAll(".selected").selectAll("circle").data([state]);
+			selected
+			.attr("r",4)
+			.attr("cx",function(d){return x(xFunction(d));})
+			.attr("cy",function(d){return y(yFunction(d));})
+			selected.enter().append("circle")
 		}
 
 		function destroy(){

@@ -1,14 +1,22 @@
+"use strict";
 //define(["react", "Store", "jsx!components/FileList", "ServerBroker"], function(React, Store, FileList, ServerBroker){
-import React from "react";
+import React from "react/addons";
 import Store from "Store";
 import FileList from "components/FileList";
-import ServerBroker from "ServerBroker";
+import InspectPageController from "controllers/InspectPageController";
+import ClientChooser from "components/ClientChooser";
+import Chart from "components/charts/Chart";
+import Highlight from "react-highlight";
+
+var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+
 
 	var InspectPage = function(){
 		function getElement(){
-			var repoStore = new Store();
-			var FileStateTimeLapseElement = React.createElement(FileStateTimeLapse, {store: repoStore});
-			return FileStateTimeLapseElement;
+			var inspectStore = new Store();
+			var dispatcher = new InspectPageController(inspectStore);
+			var ExerciseTimelapseElement = React.createElement(ExerciseTimelapse, {store: inspectStore, dispatcher: dispatcher});
+			return ExerciseTimelapseElement;
 		}
 
 		return {
@@ -16,88 +24,162 @@ import ServerBroker from "ServerBroker";
 		};
 	};
 
-	var FileStateTimeLapse = React.createClass({
+	var ExerciseTimelapse = React.createClass({
 
+		propTypes: {
+			store: React.PropTypes.object,
+			dispatcher: React.PropTypes.object
+		},
 
-		getMarkersFile: function(state){
-			return this.getFileByName(state,".markers.json");
-		},
-		getTestsFile: function(state){
-			return	this.getFileByName(state,".tests.json");
-		},
-		getFileByName: function(state,fileName){
-			return state.files.filter(function(file){if(file.name === fileName){return file;}})[0];
-		},
 		getInitialState: function(){
-			var states = this.props.states;
-			var currentState = states[0];
-			var markersFile = this.getMarkersFile(currentState);
-			var testsFile = this.getTestsFile(currentState);
-			var selectedFile = currentState.files[0];
-			console.log("STATE: ",currentState,selectedFile,markersFile,testsFile);
-			return {
-				states:states,
-				currentState:currentState,
-				selectedFile:selectedFile,
-				markersFile: markersFile,
-				testsFile: testsFile
-			}
+			this.props.store.addListener(this._onStoreChange);
+			return this.props.store.getState();
 		},
-		updateStateGivenSelectedState: function(state){
 
-			var markersFile = this.getMarkersFile(state);
-			var testsFile = this.getTestsFile(state);
-			var selectedFile = this.getFileByName(state,this.state.selectedFile.name);
-			this.setState({
-				markersFile:markersFile,
-				testsFile:testsFile,
-				selectedFile:selectedFile
-			})
+		_onCategoryChange: function(categoryName){
+			var category = this.state.categoryList.reduce(function(acc, category){
+				if(category.name === categoryName){
+					return category;
+				}
+				return acc;
+			}, null);
+
+			this.props.dispatcher.onChangeCategory(category);
 		},
-		onFileChange: function(fileName){
-			var selectedFile =this.state.currentState.files.filter(function(state){
-				if(state.name == fileName){
-					return true;
-				}	
-				return false;
+
+		_onClientChange: function(clientId){
+			var client = this.state.clientList.reduce(function(acc, client){
+				if(client.clientId === clientId){
+					return client;
+				}
+				return acc;
+			});
+			this.props.dispatcher.onChangeClient(client);
+		},
+
+		_onStateChange: function(state){
+			//console.log("Changing state to: ",state.time);
+			this.props.dispatcher.onChangeState(state);
+		},
+
+		_onStoreChange: function(state){
+			this.setState(state);
+			//console.log("stateChange",this,state);
+		},
+
+
+
+		render: function(){
+
+			var categoryNames = this.state.categoryList.map((category)=>{return category.name;});
+			var clientIds = this.state.clientList.map((client)=>{return client.clientId;});
+
+			var categoryChooser = <ClientChooser clientList={categoryNames} currentElement={this.state.selectedCategory.name} onClientChange={this._onCategoryChange} />;
+
+			var clientChooser = <ClientChooser clientList={clientIds} currentElement={this.state.client.clientId} onClientChange={this._onClientChange} />;
+
+			var fileDisplays = this.state.files.map((file)=>{
+				var fileMeta = this.state.client.getFile(file.contentName);
+
+				return (
+					<FileDisplay className="mainFileDisplay" file={file} fileMeta={fileMeta} time={this.state.currentState.time}/>
+				);
+			});
+			// How does state work?  should they all follow same overall category states? In that case, how do we make intermediary states?
+			
+			var charts = this.state.expressions.map((expression)=>{
+				return <Chart className="smallChart" data={this.state.clientStates} xFunction={expression.xFunction} yFunction={expression.yFunction} selected={this.state.currentState} />
 			});
 
-			this.setState({
-				selectedFile:selectedFile[0]
-			})
-			console.log("Changing file to: ",fileName);
-		},
-		onStateChange: function(state){
-			console.log("Changing state to: ",state.time);
-			this.updateStateGivenSelectedState(state);
-			this.setState({
-				currentState:state,
+			var time = new Date(this.state.currentState.time).toString();
 
-			})
-		},
-		render: function(){
-			var fileNames = this.state.currentState.files.map(function(file){return file.name;})
 			return (
-				<div>
-				<div className="inspectPage">
-				<FileList fileNames={fileNames} onFileChange={this.onFileChange}/>
-				<FileDisplay className="mainFileDisplay" file={this.state.selectedFile} />
+				<div className="flex row">
+				<div className="flex horizNav">
+				{categoryChooser}
+				{clientChooser}
 				</div>
-				<StateSelector states={this.state.states} onStateChange={this.onStateChange}/>
+				{fileDisplays}
+				<div className="flex row">
+				<div> Time : {time}</div>
+				</div>
+				<div className="flex row">
+				{charts}
+				</div>
+				<StateSelector states={this.state.clientStates} onStateChange={this._onStateChange}/>
 				</div>
 			);
 
 		}
 	});
 
-	// tutorial1.js
 
 	var FileDisplay = React.createClass({
+
+		getClosestState: function(states, time){
+			var closestState = {};
+
+			for(var i=0;i<states.length;i++){
+				if(states[i].time > time){
+					break;
+				}
+				closestState = states[i]; 
+			}
+
+			return closestState;
+		},
+
 		render: function() {
 			var className = "fileDisplay "+this.props.className;
+			var closestState = this.getClosestState(this.props.file.states, this.props.time);
+			var contents = closestState.fileContents || "<Empty>";
+			
+			var lines = contents.split("\n");
+			var numSquareBrackets = 0;
+			var numEmptyLines= 0;
+/*
+			var DOMLines = lines.map((line, index) => {
+				var key = btoa(line);
+				var className = "line";
+				if(line.trim() === "}"){
+					key+=index;
+					className+= " ignore";
+				}
+				if(line.trim() === ""){
+					key+=index;
+					className+= " ignore";
+				}
+				return <div key={key} className={className}><span className="num">{index}</span><span>{line}</span></div>;
+			});
+
+				<ReactCSSTransitionGroup transitionName="example">
+				</ReactCSSTransitionGroup>
+				<textarea readOnly="readOnly" className={className} value={contents}>
+			*/
+
+
+			var fileMetaState = this.getClosestState(this.props.fileMeta.states,this.props.time);
+			var fileMetaContent = "<NoTests>";
+
+			if(fileMetaState.time !== undefined){
+
+				fileMetaContent = fileMetaState.tests.map(function(test){
+					return <li>{test.methodName+": "+test.result}</li>;
+				});
+			}
+			fileMetaContent = <ul>{fileMetaContent}</ul>;
+
+
 			return (
-				<textarea readOnly="readOnly" className={className} value={this.props.file.fileContents}>
-				</textarea>
+				<div className="FileDisplay">
+				<div className="codeDisplay">
+				<Highlight className="java">
+				{contents}
+				</Highlight>
+				</div>
+
+				<div>{fileMetaContent}</div>
+				</div>
 			);
 		}
 	});

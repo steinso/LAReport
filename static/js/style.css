@@ -85,10 +85,31 @@
 }
 
 .fileDisplay {
-	width: 450px;
-	flex-basis:200px;
-	height:80%;
+	font-size: 12px;
+	font-family: "Source Code Pro";
+	flex-basis: 0; 
+	flex-grow: 3;
+	height: calc(100% - 330px);
+	border: 1px solid rgba(157, 185, 190, 1);
+	margin: 1px;
+	overflow-y: auto;
+	white-space: pre;
+}
 
+.fileDisplay .line{
+	height: 16px;
+}
+
+
+.fileDisplay .line .num{
+	width: 16px;
+	height: 100%;
+	display: inline-block;
+	font-family: "Lato";
+	background: rgb(236, 236, 236);
+	text-align:right;
+	padding-right:5px;
+	margin-right: 5px;
 }
 
 .fileViewer{
@@ -201,6 +222,18 @@
 	fill: rgba(255, 255, 255, 0.38);
 	stroke: rgba(94, 94, 94, 0.6);
 	stroke-width: 1px;
+}
+
+.chart circle{
+	fill: rgba(255, 255, 255, 0.38);
+	stroke: rgba(94, 94, 94, 0.6);
+	stroke-width: 1px;
+}
+
+.chart circle.testRan {
+	fill: rgba(255, 0, 0, 0.56);
+	stroke: none;
+
 }
 
 .chartTooltip{
@@ -415,7 +448,6 @@ table .left{
 }
 
 .expressionGraph.main{
-	flex-shrink: 3;
 }
 
 .expressionGraph .title{
@@ -461,4 +493,54 @@ table .left{
 
 .addExpression div{
 	padding: 5px;
+}
+
+
+.example-enter {
+	  background: rgb(209, 247, 209);
+	  transition: background 1.5s ease-in;
+}
+
+.example-enter.example-enter-active {
+	background: rgba(209, 247, 209,0);
+}
+
+.example-enter.ignore{
+	opacity:0.9;
+	background: rgba(0, 0, 0,0);
+	transition: opacity .1s ease-in;
+}
+
+.example-enter.example-enter-active.ignore {
+	background: rgba(0, 0, 0,0);
+	opacity:1;
+}
+
+
+.example-leave.ignore{
+	background: rgba(0, 0, 0,0);
+	opacity:0.1;
+	transition: opacity .1s ease-in;
+}
+
+.example-leave.example-leave-active.ignore {
+	background: rgba(0, 0, 0,0);
+	opacity:0;
+}
+
+.example-leave {
+	opacity: 1;
+	background: rgb(249, 207, 209);
+	transition: opacity 0.9s ease-in;
+}
+
+.example-leave.example-leave-active {
+	opacity: 0.5;
+	background: rgb(249, 207, 209);
+
+}
+
+.codeDisplay .hljs{
+	overflow-y: auto;
+	height: calc(100% - 100px);
 }

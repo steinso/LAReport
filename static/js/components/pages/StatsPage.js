@@ -4,7 +4,8 @@ import Store from "Store";
 import ClientChooser from "components/ClientChooser";
 import CategoryList from "components/CategoryList";
 import LocOverTimeChart from "components/charts/LocOverTime";
-import ServerBroker from "ServerBroker";
+import MarkerStore from "stores/MarkerStore";
+import ClientStore from "stores/ClientStore";
 import clientId from "ClientId";
 import StatsBar from "components/StatsBar";
 
@@ -30,13 +31,12 @@ import StatsBar from "components/StatsBar";
 		var _currentFile = {};
 		var _clientList = [];
 		var _selectedClient = "";
-		var serverBroker = new ServerBroker();
 
 		constructor();
 		function constructor(){
 			statsStore.setState(getCurrentState());
 
-			serverBroker.getClientList().then(function(clientList){
+			ClientStore.getClientList().then(function(clientList){
 				_clientList = clientList;
 				console.log("Clients:",_clientList);
 				statsStore.setState(getCurrentState());
@@ -97,7 +97,7 @@ import StatsBar from "components/StatsBar";
 		}
 
 		function _updateStates(){
-			serverBroker.getClientCategoriesById(_selectedClient).then(function(categories){
+			ClientStore.getClient(_selectedClient).then(function(categories){
 				_categories = categories;
 				console.log("Got new client files:",_categories);
 				statsStore.setState(getCurrentState());

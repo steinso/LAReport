@@ -14,12 +14,13 @@ var ExpressionComponent = React.createClass({
 		var _this = this;
 
 		var expressionExplorations = stateCategories.map(function(category){
-			return <ExpressionExploration name={category} states={_this.props.states[category]} expression={_this.props.expression} className=""/>
+			var states = _this.props.states[category];
+			return <ExpressionExploration name={category} states={states} expression={_this.props.expression} className=""/>;
 		});
 
 		var main = [];
 		if(this.props.main !== null && this.props.main !== undefined){
-			main = <ExpressionGraph expression={this.props.expression} state={this.props.main} className="main"/>
+			main = <ExpressionGraph expression={this.props.expression} state={this.props.main} className="main"/>;
 		}
 
 		return (

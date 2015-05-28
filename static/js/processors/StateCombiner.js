@@ -62,7 +62,10 @@ function StateCombiner(){
 				numberOfLines: 0,
 				numberOfFailedTests: 0,
 				numberOfTests: 0,
-				numberOfMarkers: 0
+				numberOfMarkers: 0,
+				tests: [],
+				markers: [],
+				ranTest: false
 			};
 
 			// Set values on new state if time is less than or eql lowest
@@ -73,7 +76,17 @@ function StateCombiner(){
 				if(state.time <= lowestTime){
 					newState.numberOfLines += state.numberOfLines;
 					newState.numberOfMarkers += state.numberOfMarkers;
+					newState.markers = newState.markers.concat(state.markers);
 				}
+
+				// Tests shoulf only come from the one state that is active
+				// Otherwise we get bug where it says tests are run on each state
+				// if the last state in a group has ranTest = true;
+				if(state.time === lowestTime){
+					newState.ranTest = newState.ranTest || state.ranTest;
+					newState.tests = newState.tests.concat(state.tests);
+				}
+
 			});
 
 			//Failed tests are handeled differently as they should always be a sum of all the files

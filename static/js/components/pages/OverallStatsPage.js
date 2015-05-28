@@ -2,7 +2,7 @@
 //define(["react", "d3", "Store", "ServerBroker", "models/Workspace", "ClientId", "jsx!components/StatsBar"], function(React, d3, Store, ServerBroker, Workspace, clientId, StatsBar){
 import React from "react";
 import Store from "Store";
-import ServerBroker from "ServerBroker";
+import MarkerStore from "stores/MarkerStore";
 import StatsBar from "components/StatsBar";
 
 	var OverallStatsPage = function(){
@@ -24,7 +24,6 @@ import StatsBar from "components/StatsBar";
 		var _markerTypes = [];
 		var _markerTypesByCategory = [];
 		var _statsSections = [];
-		var serverBroker = new ServerBroker();
 
 		constructor();
 		function constructor(){
@@ -41,12 +40,12 @@ import StatsBar from "components/StatsBar";
 		}
 
 		function _updateStates(){
-			serverBroker.getMarkerTypes().then(function(markerTypes){
+			MarkerStore.getMarkerTypes().then(function(markerTypes){
 				_markerTypes = markerTypes;
 				statsStore.setState(getCurrentState());
 			});
 
-			serverBroker.getMarkerTypesByCategory().then(function(markerTypes){
+			MarkerStore.getMarkerTypesByCategory().then(function(markerTypes){
 				_markerTypesByCategory = markerTypes;
 				statsStore.setState(getCurrentState());
 			});

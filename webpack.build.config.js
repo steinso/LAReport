@@ -47,7 +47,9 @@ module.exports = {
 
 	module: {
 		loaders: [
-			{ test: /\.js?$/,  loaders: ['react-hot', 'babel'], exclude: /node_modules/  },
+			{ test: /\.(js)$/,  loaders: ['react-hot', 'babel'], exclude: /node_modules/  },
+			{ test: /\.(jsx)$/,  loaders: ['react-hot', 'babel'] },
+			//{ test: /\.js?x?$/,  loaders: ['react-hot', 'babel'], exclude: /node_modules/  },
 			/*{ test: /\.css$/,  loader: ExtractTextPlugin.extract('style-loader', 'css-loader')  },*/
 			{ test: /\.css$/,  loader: 'style!css' }
 			/*{ test: /\.(jpg|png)$/,  loader: 'url-loader?limit=8192'  }*/

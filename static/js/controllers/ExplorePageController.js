@@ -129,18 +129,19 @@ var ExplorePageController = function(statsStore){
 
 		_states.selectedState = _selectedCategory.states;
 
-		_states.categoryStates = [_selectedCategory.states ,_selectedCategory.states];
-		_states.categoryStates = _extraCategories.map(function(category){ return category.states;});
-		_states.userStates = _extraClients.map(function(clientCategories){
-			return clientCategories.reduce(function(prev,current){
+		_states.categoryStates = _extraCategories.map(function(category){ return {title: category.name, states: category.states};});
+		_states.userStates = _extraClients.map(function(client){
+			var states = client.categories.reduce(function(prev,current){
 				if(current.name === _selectedCategory.name){
 					prev = current.states;
 				}
 				return prev;
 			},{});
+
+			return {title: client.clientId.substring(0,5), states: states};
 		});
 
-		_states.referenceStates = [_selectedCategory.states, _selectedCategory.states];
+		_states.referenceStates = [];
 
 		return {
 			states: _states,
@@ -176,8 +177,8 @@ var ExplorePageController = function(statsStore){
 	}
 
 	function _updateStates(){
-		ClientStore.getClient(_selectedClient).then(function(categoryList){
-			_categoryList = categoryList;
+		ClientStore.getClient(_selectedClient).then(function(client){
+			_categoryList = client.categories;
 			console.log("Got new client files:",_categoryList);
 			statsStore.setState(getCurrentState());
 		},function(error){

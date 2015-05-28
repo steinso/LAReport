@@ -101,6 +101,17 @@ app.get("/category", function(req, res){
 	});
 });
 
+app.get("/file", function(req, res){
+
+	var url = LASTORE_URL+"file";
+    var log = new Log("unknown", "File :"+req.query);
+
+	request({url: url, method: "GET", qs: req.query},function(error,response,body){
+		log.print();
+		res.send(body);
+	});
+});
+
 app.use(express.static(__dirname + "/static"));
 
 app.listen(PORT, function(){

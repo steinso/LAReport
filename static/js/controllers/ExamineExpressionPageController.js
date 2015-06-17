@@ -25,6 +25,10 @@ var ExamineExpressionPageController = function(statsStore){
 			statsStore.setState(getCurrentState());
 		});
 
+		ExpressionStore.subscribe(function(){
+			statsStore.setState(getCurrentState());
+		});
+
 		statsStore.setState(getCurrentState());
 	}
 

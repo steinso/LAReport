@@ -20,7 +20,7 @@ var ExpressionComponent = React.createClass({
 
 		var main = [];
 		if(this.props.main !== null && this.props.main !== undefined){
-			main = <ExpressionGraph expression={this.props.expression} state={this.props.main} className="main"/>;
+			main = <ExpressionGraph expression={this.props.expression} state={this.props.main} onEdit={this.props.onEdit} onDelete={this.props.onDelete} className="main"/>;
 		}
 
 		return (

@@ -1,11 +1,11 @@
 "use strict";
 import React from "react";
 import Store from "Store";
-import ClientChooser from "components/ClientChooser";
-import StatsBar from "components/StatsBar";
+import ListButton from "components/ListButton";
 import ExplorePageController from "controllers/ExplorePageController";
 import ExpressionComponent from "components/ExpressionComponent";
 import AddExpressionModal from "components/AddExpressionModal";
+
 
 
 var ExplorePage = function(){
@@ -55,15 +55,24 @@ var ExplorePageComponent = React.createClass({
 		this.props.dispatcher.onAddExpression(expression);
 	},
 
+	onDeleteExpression: function(expression){
+		this.props.dispatcher.onDeleteExpression(expression);
+	},
+
+	onEditExpression: function(expression){
+		this.props.dispatcher.onEditExpression(expression);
+	},
+
 	render: function() {
 		var _this = this;
-		var relevant_states = {
+		var relevantStates = {
 			"SomeUsers": this.state.states.userStates,
-			"SomeCategories": this.state.states.categoryStates,
-			"References": this.state.states.referenceStates
-		}
+			"SomeCategories": this.state.states.categoryStates
+		//	"References": this.state.states.referenceStates
+		};
+
 		var _expressionComponents = this.state.expressions.map(function(expression){
-			return <ExpressionComponent expression={expression} states={relevant_states} main={_this.state.states.selectedState}/>;
+			return <ExpressionComponent expression={expression} states={relevantStates} main={_this.state.states.selectedState} onEdit={_this.onEditExpression} onDelete={_this.onDeleteExpression}/>;
 
 		});
 
@@ -72,14 +81,14 @@ var ExplorePageComponent = React.createClass({
 			_expressionComponents = [];
 		}
 
-		var clientChooser = <ClientChooser clientList={this.state.clientList} currentElement={this.state.selectedClient} onClientChange={this._onClientChange} />;
+		var clientChooser = <ListButton heading="Participant" elements={this.state.clientList} currentElement={this.state.selectedClient} onClick={this._onClientChange} />
 		var categoryNames = this.state.categoryList.map(function(category){return category.name;});
-		var categoryChooser = <ClientChooser clientList={categoryNames} currentElement={this.state.selectedCategory.name} onClientChange={this._onCategoryChange} />;
+		var categoryChooser = <ListButton heading="Assignments" elements={categoryNames} currentElement={this.state.selectedCategory.name} onClick={this._onCategoryChange} />
+
 		var addExpressionButton = <AddExpressionModal onAddExpression ={this._onAddExpression} expressionVariables={this.state.expressionVariables}/>;
 
 		return (
 			<div className="flex row">
-			<StatsBar sections={this.state.statsSections} />
 			<div className="flex horizNav">
 			{clientChooser}
 			{categoryChooser}

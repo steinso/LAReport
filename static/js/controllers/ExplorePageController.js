@@ -34,6 +34,10 @@ var ExplorePageController = function(statsStore){
 			_getSomeCategoryComparisons();
 
 		});
+
+		ExpressionStore.subscribe(function(){
+			statsStore.setState(getCurrentState());
+		});
 		statsStore.setState(getCurrentState());
 	}
 
@@ -131,14 +135,14 @@ var ExplorePageController = function(statsStore){
 
 		_states.categoryStates = _extraCategories.map(function(category){ return {title: category.name, states: category.states};});
 		_states.userStates = _extraClients.map(function(client){
-			var states = client.categories.reduce(function(prev,current){
-				if(current.name === _selectedCategory.name){
-					prev = current.states;
-				}
-				return prev;
-			},{});
 
-			return {title: client.clientId.substring(0,5), states: states};
+			//Just chose a random category 
+			var num = Math.floor(Math.random()*100 % client.categories.length);
+			var states = client.categories[num].states;
+
+			var title = client.clientId.substring(0,5) + " - " + client.categories[num].name;
+
+			return {title:  title, states: states};
 		});
 
 		_states.referenceStates = [];
@@ -165,7 +169,11 @@ var ExplorePageController = function(statsStore){
 	}
 
 	function onAddExpression(rawExpression){
-		ExpressionStore.addRawExpression(rawExpression, _expressionVariables);
+		ExpressionStore.addRawExpression(rawExpression);
+	}
+
+	function onDeleteExpression(expression){
+		ExpressionStore.deleteExpression(expression.id);
 	}
 
 	function onChangeClient(clientId){
@@ -190,6 +198,7 @@ var ExplorePageController = function(statsStore){
 		onChangeCategory: onChangeCategory,
 		onChangeClient: onChangeClient,
 		onAddExpression: onAddExpression,
+		onDeleteExpression: onDeleteExpression,
 		getCurrentState: getCurrentState
 	};
 };

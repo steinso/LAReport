@@ -14,8 +14,8 @@ import _ from "lodash";
 
 			var startDate = +new Date(file.states[0].time);
 			var buffer = 0;
-			var idleThreshold = 10*60*1000; //assumed idle after x ms
-			var lengthOfIdle = 1000*60*5; //show idle time as 5 minute
+			var idleThreshold = 5*60*1000; //assumed idle after x ms
+			var lengthOfIdle = 1000*60*2; //show idle time as 2 minute
 			var previousTime = startDate;
 
 			file.states.map(function(state){

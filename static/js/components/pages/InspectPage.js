@@ -4,7 +4,7 @@ import React from "react/addons";
 import Store from "Store";
 import FileList from "components/FileList";
 import InspectPageController from "controllers/InspectPageController";
-import ClientChooser from "components/ClientChooser";
+import ListButton from "components/ListButton";
 import Chart from "components/charts/Chart";
 import Highlight from "react-highlight";
 
@@ -64,19 +64,18 @@ var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 		_onStoreChange: function(state){
 			this.setState(state);
-			//console.log("stateChange",this,state);
+			console.log("stateChange",this.state);
 		},
-
-
 
 		render: function(){
 
 			var categoryNames = this.state.categoryList.map((category)=>{return category.name;});
 			var clientIds = this.state.clientList.map((client)=>{return client.clientId;});
 
-			var categoryChooser = <ClientChooser clientList={categoryNames} currentElement={this.state.selectedCategory.name} onClientChange={this._onCategoryChange} />;
 
-			var clientChooser = <ClientChooser clientList={clientIds} currentElement={this.state.client.clientId} onClientChange={this._onClientChange} />;
+			var clientChooser = <ListButton heading="Participant" elements={clientIds} currentElement={this.state.client.clientId} onClick={this._onClientChange} />
+			var categoryChooser = <ListButton heading="Assignments" elements={categoryNames} currentElement={this.state.selectedCategory.name} onClick={this._onCategoryChange} />
+
 
 			var fileDisplays = this.state.files.map((file)=>{
 				var fileMeta = this.state.client.getFile(file.contentName);
@@ -88,7 +87,7 @@ var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 			// How does state work?  should they all follow same overall category states? In that case, how do we make intermediary states?
 			
 			var charts = this.state.expressions.map((expression)=>{
-				return <Chart className="smallChart" data={this.state.clientStates} xFunction={expression.xFunction} yFunction={expression.yFunction} selected={this.state.currentState} />
+				return <Chart className="smallChart" data={this.state.clientStates} expression={expression} selected={this.state.currentState} />
 			});
 
 			var time = new Date(this.state.currentState.time).toString();

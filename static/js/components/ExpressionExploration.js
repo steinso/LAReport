@@ -16,7 +16,7 @@ var ExpressionExploration = React.createClass({
 				return;
 			}
 			return (<div>
-					<Chart className="smallChart" data={state.states} xFunction={_this.props.expression.xFunction} yFunction={_this.props.expression.yFunction}/>
+					<Chart className="smallChart" data={state.states} expression={_this.props.expression} />
 					<span> {state.title}</span>
 					</div>
 				   );

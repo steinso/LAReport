@@ -1,8 +1,7 @@
 "use strict";
 import React from "react";
 import Store from "Store";
-import ClientChooser from "components/ClientChooser";
-import StatsBar from "components/StatsBar";
+import ListButton from "components/ListButton";
 import ExamineExpressionPageController from "controllers/ExamineExpressionPageController";
 import ExpressionComponent from "components/ExpressionComponent";
 import AddExpressionModal from "components/AddExpressionModal";
@@ -79,12 +78,11 @@ var ExamineExpressionPageComponent = React.createClass({
 		}
 
 		var categoryNames = this.state.categoryList.map(function(category){return category.name;});
-		var categoryChooser = <ClientChooser clientList={categoryNames} currentElement={this.state.selectedCategory.name} onClientChange={this._onCategoryChange} />;
+		var categoryChooser = <ListButton heading="Assignment" elements={categoryNames} currentElement={this.state.selectedCategory.name} onClick={this._onCategoryChange} />
 		var addExpressionButton = <AddExpressionModal onAddExpression ={this._onAddExpression} expressionVariables={this.state.expressionVariables}/>;
 
 		return (
 			<div className="flex row">
-			<StatsBar sections={this.state.statsSections} />
 			<div className="flex horizNav">
 			{categoryChooser}
 			{addExpressionButton}

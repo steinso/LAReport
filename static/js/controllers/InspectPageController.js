@@ -15,7 +15,6 @@ var InspectPageController = function(statsStore){
 	var _statsSections = [];
 	var _currentState = [];
 	var _clientStates = [];
-	var _expressions = [];
 
 	constructor();
 	function constructor(){
@@ -23,7 +22,10 @@ var InspectPageController = function(statsStore){
 			_categoryList = list;
 			statsStore.setState(getCurrentState());
 		});
-		_expressions = ExpressionStore.getExpressions();
+
+		ExpressionStore.subscribe(function(){
+			statsStore.setState(getCurrentState());
+		});
 
 		statsStore.setState(getCurrentState());
 	}
@@ -55,7 +57,7 @@ var InspectPageController = function(statsStore){
 			files: _files,
 			clientStates: _clientStates,
 			currentState: _currentState,
-			expressions: _expressions
+			expressions: ExpressionStore.getExpressions()
 		};
 	}
 

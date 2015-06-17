@@ -3,18 +3,49 @@
 function ExpressionStore(){
 
 	var _expressions = [];
+	var _subscribers = [];
+	var idx = 0;
 
 
 	function _constructor(){
 		_loadStoredExpressions();
 	}
 
-	function addExpression(){
+	function addExpression(expression, id){
+		var timestamp = Date.now();
+		if(!id){
+			id = ""+ timestamp + (idx++);
+		}
+
+		expression.id = id;
+		expression.lastEdit = timestamp;
+
+		_expressions.push(expression);
 
 	}
 
-	function removeExpression(){
+	function deleteExpression(id, noSave){
+		if(id === undefined){return;}
+		_expressions = _expressions.filter(function(expr){
+			if(expr.id === id){
+				return false;
+			}
 
+			return true;
+		});
+
+		//Dynamic lanugage..
+		if(noSave !== true){
+			_saveExpressions();
+		}
+		console.log("Expression deleted: ",id);
+	}
+
+	function editExpression(expression){
+		deleteExpression(expression.id,true);
+		addExpression(expression,expression.id);
+
+		_saveExpressions();
 	}
 
 	function getExpressions(){
@@ -38,26 +69,34 @@ function ExpressionStore(){
 		return expressionVariables;
 	}
 
-	function addRawExpression(expression, expressionVariables){
-		var expr = _parseRawExpression(expression, expressionVariables);
-		_expressions.push(expr);
+	function addRawExpression(expression){
+
+		var expr = _parseRawExpression(expression);
+
+		if(expression.id !== undefined){
+			editExpression(expr);
+		}else{
+			addExpression(expr);
+		}
+
 		console.log("expression added: ", expr);
 
 		//Store in client storage
-		localStorage.setItem("expressions", JSON.stringify(_expressions));
+		_saveExpressions();
 	}
 
-	function _parseRawExpression(expression, expressionVariables){
+	function _parseRawExpression(expression){
 		// We take in a string with user defined vatiables
 		// then we replace them with a reference to a field in a state
 		// we do this by replacing ex. $A with state['time']
 		// we then eval this string in a function that takes
 		// state as a parameter
 
-		var exprX = expression.computerReadablexFunction;
-		var exprY = expression.computerReadableyFunction;
+		var exprX = expression.rawxFunction;
+		var exprY = expression.rawyFunction;
 		var exprHumanReadableX = exprX;
 		var exprHumanReadableY = exprY;
+		var expressionVariables = expression.expressionVariables;
 
 		var variables = Object.keys(expressionVariables);
 
@@ -72,8 +111,13 @@ function ExpressionStore(){
 		// Yes, eval is no good, however this is client side, and is a prototype
 		// functionality vs time, this wins
 		return {
+			id: expression.id,
 			name: expression.name,
+			xName: expression.xName,
+			yName: expression.yName,
 			expressionVariables: expressionVariables,
+			rawxFunction: expression.rawxFunction,
+			rawyFunction: expression.rawyFunction,
 			computerReadablexFunction: exprX,
 			computerReadableyFunction: exprY,
 			humanReadablexFunction: exprHumanReadableX,
@@ -83,6 +127,20 @@ function ExpressionStore(){
 		};
 	}
 
+	function subscribe(func){
+		_subscribers.push(func);
+	}
+
+	function _notify(){
+		_subscribers.forEach(function(s){
+			s(_expressions);
+		});
+	}
+
+	function _saveExpressions(){
+		localStorage.setItem("expressions", JSON.stringify(_expressions));
+		_notify();
+	}
 
 	function _loadStoredExpressions(){
 		try{
@@ -99,9 +157,11 @@ function ExpressionStore(){
 
 	return {
 		addExpression: addExpression,
+		editExpression: editExpression,
 		addRawExpression: addRawExpression,
-		removeExpression: removeExpression,
+		deleteExpression: deleteExpression,
 		createExpressionVariables: createExpressionVariables,
+		subscribe: subscribe,
 		getExpressions: getExpressions
 	};
 }

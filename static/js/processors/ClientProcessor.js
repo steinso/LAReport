@@ -49,13 +49,13 @@ class User{
 				return;
 			}
 
-			if(this._fileContents[file] !== undefined){
-				resolve(this._fileContents[file]);
+			if(this._fileContents[file.name] !== undefined){
+				resolve(this._fileContents[file.name]);
 			}
 
 			FileStore.getFileContents(this.clientId, file.name).then((file)=>{
-				this._fileContents[file] = file;
-				resolve(this._fileContents[file]);
+				this._fileContents[file.name] = file;
+				resolve(this._fileContents[file.name]);
 			});
 		});
 	}

@@ -89,7 +89,7 @@
 	font-family: "Source Code Pro";
 	flex-basis: 0; 
 	flex-grow: 3;
-	height: calc(100% - 330px);
+	height: calc(100% - 365px);
 	border: 1px solid rgba(157, 185, 190, 1);
 	margin: 1px;
 	overflow-y: auto;
@@ -185,8 +185,8 @@
 }
 
 .Chart.smallChart {
-	height: 200px;
-	width: 200px;
+	height: 250px;
+	width: 250px;
 }
 
 .chart .axis{
@@ -214,6 +214,10 @@
 
 }
 
+.chart .line.linear {
+	  stroke: rgb(226, 226, 226);
+}
+
 .chart .markers{
 	fill: rgba(255, 174, 0, 0.19);
 }
@@ -222,6 +226,12 @@
 	fill: rgba(255, 255, 255, 0.38);
 	stroke: rgba(94, 94, 94, 0.6);
 	stroke-width: 1px;
+}
+
+.chart circle.dot.idle{
+	fill: rgba(107, 166, 192, 0.75);
+	stroke: rgba(94, 94, 94, 0);
+	stroke-width: 0;
 }
 
 .chart circle{
@@ -258,7 +268,7 @@
 }
 
 .overlay{
-	position:absolute;
+	position: fixed;
 	top:0;
 	left:0;
 	width:100%;
@@ -292,6 +302,7 @@
 	-webkit-animation: appear 0.15s linear;
 	z-index: 105;
 }
+
 
 .listButtonBox .element{
 	padding: 10px;
@@ -336,20 +347,42 @@
 .listBoxButton{
 	height: 50px;
 	background: rgb(110, 216, 236);
-	padding: 10px;
 	font-family: "Open Sans";
-	text-align: center;
-	line-height: 30px;
 	margin-top: 10px;
 	margin-left: 20px;
 	box-sizing: border-box;
-	width: 100px;
-	overflow:hidden;
+	margin-bottom: 10px;
+	margin-right: 30px;
+
+	flex-basis: 100px;
+}
+
+.listBoxButton span.content {
+	text-align: center;
+	/* line-height: 30px; */
+	padding: 10px;
+	width: 70px;
+	overflow: hidden;
 	text-overflow: ellipsis;
+	position: relative;
+	top: 5px;
+	margin: auto;
+	display: block;
+	cursor: pointer;
 
 }
 
 
+
+.listBoxButton span.heading {
+
+	position: absolute;
+	font-size: 10px;
+	top: 12px;
+	/* left: 5px; */
+	margin-left: 5px;
+	color: rgba(43, 100, 111, 0.92);
+}
 .statsBar{
 	flex-basis:100%;
 	display:flex;
@@ -439,8 +472,11 @@ table .left{
 }
 
 .horizNav{
-	  background: rgb(22, 182, 158);
+	  /*background: rgb(22, 182, 158);*/
+		background: rgb(249, 248, 248);
+	  height: 70px;
 }
+
 
 .expressionGraph{
 	height: 572px;
@@ -448,6 +484,7 @@ table .left{
 }
 
 .expressionGraph.main{
+	flex-shrink: 2.5;
 }
 
 .expressionGraph .title{
@@ -490,11 +527,6 @@ table .left{
 	font-family: "Open Sans";
 	font-size: 15px; 
 }
-
-.addExpression div{
-	padding: 5px;
-}
-
 
 .example-enter {
 	  background: rgb(209, 247, 209);
@@ -543,4 +575,39 @@ table .left{
 .codeDisplay .hljs{
 	overflow-y: auto;
 	height: calc(100% - 100px);
+}
+
+.addExpression .variables {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	/* flex-basis: 10px; */
+	font-size: 12px;
+	background: rgba(0, 0, 0, 0.07);
+	border-radius: 10px;
+	padding: 5px;
+	height:100px;
+	align-content:center;
+  	margin-bottom: 25px;
+
+}
+.addExpression .variables div {
+	padding: 2px;
+	height: 15px;
+	margin: 0px 25px;
+}
+
+
+.form {
+	  display: flex;
+	    flex-direction: column;
+		  flex-wrap: wrap;
+		    height: 90px;
+
+}
+
+.form div {
+	  width: 200px;
+	    height: 25px;
+
 }

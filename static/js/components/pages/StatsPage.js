@@ -1,7 +1,7 @@
 //define(["react","d3","Store","providers/FileStatsProvider","jsx!components/ClientChooser","jsx!components/FileList","jsx!components/CategoryList","jsx!components/charts/LocOverTime","ServerBroker","models/Workspace","ClientId","jsx!components/StatsBar"],function(React,d3,Store,FileStatsProvider,ClientChooser,FileList,CategoryList,LocOverTimeChart,ServerBroker,Workspace,clientId,StatsBar){
 import React from "react";
 import Store from "Store";
-import ClientChooser from "components/ClientChooser";
+import ListButton from "components/ListButton";
 import CategoryList from "components/CategoryList";
 import LocOverTimeChart from "components/charts/LocOverTime";
 import MarkerStore from "stores/MarkerStore";
@@ -62,9 +62,13 @@ import StatsBar from "components/StatsBar";
 
 			 _statsSections = [
 				{type:"title",title:title},
-				{type:"stats",value:time+" min",avg:"? min", title:"Time spent"},
-				{type:"stats",value:testsFailed,avg:"?", title:"Tests failed"},
-				{type:"stats",value:errors,avg:"?", title:"Markers"}
+				//{type:"stats",value:time+" min",avg:"? min", title:"Time spent"},
+				//{type:"stats",value:testsFailed,avg:"?", title:"Tests failed"},
+				//{type:"stats",value:errors,avg:"?", title:"Markers"}
+
+				{type:"stats",value:time+" min",avg:"", title:"Time spent"},
+				{type:"stats",value:testsFailed,avg:"", title:"Tests failed"},
+				{type:"stats",value:errors,avg:"", title:"Markers"}
 				//{type:"stats",value:"? min",avg:"? min", title:"Correcting error"}
 			];
 
@@ -74,8 +78,8 @@ import StatsBar from "components/StatsBar";
 		function getCurrentState(){
 			_calulateStatsSections();
 			return {
-				currentFile:_currentFile,
-				files: _categories,
+				currentFile: _currentFile,
+				categories: _categories,
 				states: _states,
 				clientList: _clientList,
 				statsSections: _statsSections,
@@ -98,7 +102,7 @@ import StatsBar from "components/StatsBar";
 
 		function _updateStates(){
 			ClientStore.getClient(_selectedClient).then(function(categories){
-				_categories = categories;
+				_categories = categories.categories;
 				console.log("Got new client files:",_categories);
 				statsStore.setState(getCurrentState());
 			},function(error){
@@ -143,22 +147,25 @@ import StatsBar from "components/StatsBar";
 			var fileName = {};
 			console.log("Privilege: ",clientId.privilege)
 			if(this.state.currentFile !== undefined && this.state.currentFile.states !== undefined && this.state.currentFile.states.length>0 ){
-
 				chart = <LocOverTimeChart className="chart" fileStates={this.state.currentFile.states}/>
-				fileName = <div>{this.state.files.name}</div>
 			}
 
+			clientId.privilege = "admin";
+
 			if(this.state.clientList.length>1 && clientId.privilege!=="user"){
-				chooser = <ClientChooser clientList={this.state.clientList} currentElement={this.state.selectedClient} onClientChange={this._onClientChange}/>
+				chooser = <ListButton heading="Participant" elements={this.state.clientList} currentElement={this.state.selectedClient} onClick={this._onClientChange}/>
 			}
 
 			return (
-				<div className="flex">
+				<div className="flex row">
 				<StatsBar sections={this.state.statsSections} />
+			<div className="flex horizNav">
 				{chooser}
-				<CategoryList categories={this.state.files} selectedElement={this.state.currentFile.name} onFileChange={this._onFileChange}/>
+				</div>
+				<div className="flex">
+				<CategoryList categories={this.state.categories} selectedElement={this.state.currentFile.name} onFileChange={this._onFileChange}/>
 				{chart}
-				{fileName}
+				</div>
 				</div>
 			);
 		}

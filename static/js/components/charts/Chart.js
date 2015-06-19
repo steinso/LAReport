@@ -281,9 +281,9 @@ define(['react','d3'],function(React,d3){
 			bel.enter().append("circle");
 
 			bel.attr("class","dot idle")
-			.attr("r",2.5)
+			.attr("r",2)
 			.attr("cx",function(d){return x(xFunction(d))})
-			.attr("cy",function(d){return y(yFunction(d))-5})
+			.attr("cy",function(d){return y(yFunction(d))})
 			.on("mouseover",showToolTip)
 			.on("mouseout",hideToolTip);
 
